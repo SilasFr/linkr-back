@@ -1,25 +1,15 @@
-import { connection } from "./database.js";
+import connection from "../database.js";
 
-async function getUser(email) {
+async function createSession(userId, token, expiresAt) {
   return connection.query(
     `
-            SELECT * FROM users where email=$1
-        `,
-    [email]
-  );
-}
-
-async function createSession(token, userId) {
-  return connection.query(
-    `
-    INSERT INTO sessions (userId, token, creationTime)
+    INSERT INTO sessions ("userId", token, "expiresAt")
     VALUES ($1, $2, $3)
   `,
-    [userId, token, creationTime]
+    [userId, token, expiresAt]
   );
 }
 
 export const loginRepository = {
-  getUser,
   createSession,
 };
