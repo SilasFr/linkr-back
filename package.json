@@ -9,5 +9,13 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dayjs": "^1.11.0",
+    "dotenv": "^16.0.0",
+    "joi": "^17.6.0",
+    "pg": "^8.7.3",
+    "uuid": "^8.3.2"
+  }
 }
