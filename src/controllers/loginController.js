@@ -10,18 +10,21 @@ export async function login(req, res) {
   try {
     const userSearch = await userRepository.getUserByEmail(email);
 
-    if (userSearch.rows.length === 0) return res.sendStatus(400);
+    if (userSearch.rows.length === 0) return res.sendStatus(401);
 
     const encryptedPassword = userSearch.rows[0].password;
-    const userId = userSearch.rows[0].id;
+    const { id, name, profilePic } = userSearch.rows[0];
 
     if (bcrypt.compareSync(password, encryptedPassword)) {
       const token = tokenGenerator();
 
-      await loginRepository.createSession(userId, token, dayjs().add(1, "day"));
-      return res.send(token).status(200);
+      await loginRepository.createSession(id, token, dayjs().add(1, "day"));
+
+      return res
+        .send({ token: token, profilePic: profilePic, name: name })
+        .status(200);
     } else {
-      return res.sendStatus(400);
+      return res.sendStatus(401);
     }
   } catch {
     return res.sendStatus(500);
