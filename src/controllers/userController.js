@@ -1,8 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable consistent-return */
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable import/extensions */
-
 import bcrypt from 'bcrypt';
 import { userRepository } from '../repositories/userRepository.js';
 

@@ -1,6 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable import/extensions */
-
 import connection from '../database.js';
 
 async function createUser({ userName, email, password, pictureUrl }) {

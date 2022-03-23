@@ -1,6 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable import/extensions */
-
 import loginSchema from '../schemas/loginSchema.js';
 
 export default function loginSchemaValidation(req, res, next) {

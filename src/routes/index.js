@@ -1,5 +1,3 @@
-/* eslint-disable import/extensions */
-
 import { Router } from 'express';
 
 import postsRouter from './postsRouter.js';

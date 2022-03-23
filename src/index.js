@@ -1,7 +1,3 @@
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable no-console */
-/* eslint-disable import/extensions */
-
 import express, { json } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';

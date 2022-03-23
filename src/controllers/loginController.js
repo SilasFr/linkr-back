@@ -1,8 +1,3 @@
-/* eslint-disable object-shorthand */
-/* eslint-disable no-else-return */
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable import/extensions */
-
 import { v4 as tokenGenerator } from 'uuid';
 import bcrypt from 'bcrypt';
 import dayjs from 'dayjs';

@@ -1,5 +1,3 @@
-/* eslint-disable import/extensions */
-
 import { Router } from 'express';
 import userSchema from '../schemas/userSchema.js';
 import { createUser } from '../controllers/userController.js';

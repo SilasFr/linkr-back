@@ -1,5 +1,3 @@
-/* eslint-disable import/extensions */
-
 import { Router } from 'express';
 import loginSchemaValidation from '../middlewares/loginSchemaValidation.js';
 import { login } from '../controllers/loginController.js';

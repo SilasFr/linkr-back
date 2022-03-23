@@ -1,7 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable import/extensions */
-/* eslint-disable import/prefer-default-export */
-
 import { newPostSchema } from '../schemas/index.js';
 
 export function postValidationMiddleware(req, res, next) {
