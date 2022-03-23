@@ -44,9 +44,8 @@ export async function getSession(req, res) {
     if (session.rowCount === 0) return res.sendStatus(404);
     if (now > dayjs(session.rows[0].expiresAt).unix())
       return res.sendStatus(401);
-
     const userId = session.rows[0].userId;
-    const user = await userRepository.getUserById(userId).rows[0];
+    const user = (await userRepository.getUserById(userId)).rows[0];
 
     delete user.id;
     delete user.password;
