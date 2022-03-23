@@ -30,3 +30,29 @@ export async function login(req, res) {
     return res.sendStatus(500);
   }
 }
+
+export async function getSession(req, res) {
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "");
+
+  if (!token) return res.sendStatus(404);
+
+  try {
+    const now = dayjs().unix();
+
+    const session = await loginRepository.getSession(token);
+    if (session.rowCount === 0) return res.sendStatus(404);
+    if (now > dayjs(session.rows[0].expiresAt).unix())
+      return res.sendStatus(401);
+    const userId = session.rows[0].userId;
+    const user = (await userRepository.getUserById(userId)).rows[0];
+
+    delete user.id;
+    delete user.password;
+
+    return res.send(user).status(200);
+  } catch (e) {
+    console.log(e);
+    res.send(e).status(500);
+  }
+}
