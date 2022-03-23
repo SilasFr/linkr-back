@@ -41,3 +41,22 @@ export async function getPosts(req, res) {
     res.status(500).send(e);
   }
 }
+
+// export async function getPosts(req, res) {
+//   const userToken = req.headers.authorization.replaceAll('Bearer ', '');
+//   try {
+//     const { rows: existentToken } = await connection.query(`
+//       SELECT * FROM sessions WHERE token=$1
+//     `, [userToken]);
+//     if (existentToken.length === 0) {
+//       return res.status(404).send('!erro! token invalido ou expirado');
+//     }
+
+//     const allPosts = await connection.query(`
+//       SELECT * FROM posts;
+//     `);
+//     return res.status(200).send(allPosts.rows);
+//   } catch (error) {
+//     return res.status(500).send('!erro! obtendo posts');
+//   }
+// }
