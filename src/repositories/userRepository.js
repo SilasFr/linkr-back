@@ -20,8 +20,18 @@ async function getUserByEmail(email) {
     [email]
   );
 }
+async function getUserById(id) {
+  return connection.query(
+    `
+    SELECT * FROM users
+    WHERE id=$1
+    `,
+    [id]
+  );
+}
 
 export const userRepository = {
   createUser,
   getUserByEmail,
+  getUserById,
 };

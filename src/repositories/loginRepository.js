@@ -9,7 +9,17 @@ async function createSession(userId, token, expiresAt) {
     [userId, token, expiresAt]
   );
 }
+async function getSession(token) {
+  return connection.query(
+    `
+    SELECT * FROM sessions s
+    WHERE s.token=$1
+    `,
+    [token]
+  );
+}
 
 export const loginRepository = {
   createSession,
+  getSession,
 };
