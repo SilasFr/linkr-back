@@ -1,6 +1,5 @@
-import { newPost, getPosts } from './postsController.js';
+import { newPost } from './postsController.js';
 
 export {
   newPost,
-  getPosts,
 };
