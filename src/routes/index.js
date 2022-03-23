@@ -3,9 +3,13 @@
 import { Router } from 'express';
 
 import postsRouter from './postsRouter.js';
+import loginRouter from './loginRouter.js';
+import userRouter from './userRouter.js';
 
-const mainRouter = Router();
+const router = Router();
 
-mainRouter.use(postsRouter);
+router.use(userRouter);
+router.use(loginRouter);
+router.use(postsRouter);
 
-export default mainRouter;
+export default router;
