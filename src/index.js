@@ -10,4 +10,6 @@ app.use(json());
 
 app.use(router);
 
-app.listen(process.env.PORT, () => console.log("running on PORT 5000"));
+app.listen(process.env.PORT, () =>
+  console.log(`running on PORT ${process.env.PORT}`)
+);
