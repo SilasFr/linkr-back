@@ -9,10 +9,9 @@ export async function newPost(req, res) {
     return res.sendStatus(201);
   } catch (error) {
     console.log(error);
-    return res.status(500).send('!erro! cadastrando novo post');
+    return res.status(500).send("!erro! cadastrando novo post");
   }
 }
-
 
 export async function getPosts(req, res) {
   try {
@@ -39,7 +38,7 @@ export async function getPosts(req, res) {
     });
     setTimeout(() => {
       res.send(result).status(200);
-    }, rows.length * 500);
+    }, rows.length * 1000);
   } catch (e) {
     console.log(e);
     res.status(500).send(e);
