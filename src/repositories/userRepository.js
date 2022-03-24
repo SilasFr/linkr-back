@@ -1,4 +1,4 @@
-import connection from "../database.js";
+import connection from '../database.js';
 
 async function createUser({ userName, email, password, pictureUrl }) {
   return connection.query(
@@ -17,7 +17,7 @@ async function getUserByEmail(email) {
     `
     SELECT * FROM users WHERE email=$1
     `,
-    [email]
+    [email],
   );
 }
 async function getUserById(id) {

@@ -1,5 +1,5 @@
-import bcrypt from "bcrypt";
-import { userRepository } from "../repositories/userRepository.js";
+import bcrypt from 'bcrypt';
+import { userRepository } from '../repositories/userRepository.js';
 
 export async function createUser(req, res) {
   try {
