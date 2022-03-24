@@ -13,12 +13,26 @@ CREATE TABLE sessions(
 	"expiresAt" TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
+CREATE TABLE links(
+	id SERIAL PRIMARY KEY,
+	link TEXT NOT NULL,
+	title TEXT NOT NULL,
+	description TEXT,
+	image TEXT NOT NULL,	
+)
+
+CREATE TABLE linksPosts(
+	id SERIAL PRIMARY KEY,
+	"linkId" INTEGER NOT NULL REFERENCES link(id),
+	"postsId" INTEGER NOT NULL REFERENCES post(id)
+)
+
 CREATE TABLE posts(
 	id SERIAL PRIMARY KEY,
 	author INTEGER NOT NULL REFERENCES users(id),
 	description TEXT NOT NULL,
-	link TEXT NOT NULL,
-	createdAt DATE NOT NULL DEFAULT NOW()
+	"linkId" INTEGER NOT NULL REFERENCES "linkPosts"("linkId"),
+	"createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE "likedPost"(
@@ -37,3 +51,5 @@ CREATE TABLE "postsTopics"(
 	"postId" INTEGER NOT NULL REFERENCES posts(id),
 	"topicId" INTEGER NOT NULL REFERENCES topics(id)
 );
+
+
