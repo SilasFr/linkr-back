@@ -37,5 +37,3 @@ CREATE TABLE "postsTopics"(
 	"postId" INTEGER NOT NULL REFERENCES posts(id),
 	"topicId" INTEGER NOT NULL REFERENCES topics(id)
 );
-
-

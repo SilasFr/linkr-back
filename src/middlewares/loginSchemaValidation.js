@@ -1,4 +1,4 @@
-import loginSchema from "../schemas/loginSchema.js";
+import loginSchema from '../schemas/loginSchema.js';
 
 export default function loginSchemaValidation(req, res, next) {
   const validation = loginSchema.validate(req.body);
