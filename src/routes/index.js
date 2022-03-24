@@ -1,4 +1,3 @@
-
 import { Router } from "express";
 import userRouter from "./userRouter.js";
 import loginRouter from "./loginRouter.js";

@@ -1,4 +1,4 @@
-import { newPostSchema } from '../schemas/index.js';
+import newPostSchema from '../schemas/newPostSchema.js';
 
 export function postValidationMiddleware(req, res, next) {
   const newPostData = req.body;
