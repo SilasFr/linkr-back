@@ -4,7 +4,6 @@ import urlMetadata from "url-metadata";
 export async function getPosts(req, res) {
   try {
     const { rows } = await postsRepository.getPosts();
-    // console.log(rows);
 
     let result = [];
     rows.map((element) => {
