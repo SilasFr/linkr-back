@@ -8,15 +8,9 @@ const { Pool } = pg;
 const databaseConfig = {
   host: 'localhost',
   port: 5432,
-<<<<<<< HEAD
-  user: 'postgres',
-  password: '123456',
-  database: 'linkr',
-=======
   user: "postgres",
   password: "123456",
   database: "linkr",
->>>>>>> timeline
 };
 
 // const databaseConfig = {
