@@ -29,12 +29,6 @@ CREATE TABLE sessions(
     "expiresAt" TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
-CREATE TABLE "linksPosts"(
-    id SERIAL PRIMARY KEY,
-    "linkId" INTEGER NOT NULL REFERENCES links(id),
-    "postsId" INTEGER NOT NULL REFERENCES posts(id)
-);
-
 CREATE TABLE "likedPost"(
     id SERIAL PRIMARY KEY,
     "postId" INTEGER NOT NULL REFERENCES posts(id),
