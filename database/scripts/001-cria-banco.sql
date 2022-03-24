@@ -32,7 +32,7 @@ CREATE TABLE posts(
 	author INTEGER NOT NULL REFERENCES users(id),
 	description TEXT NOT NULL,
 	"linkId" INTEGER NOT NULL REFERENCES "linkPosts"("linkId"),
-	createdAt TIMESTAMP NOT NULL DEFAULT NOW()
+	"createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE "likedPost"(
