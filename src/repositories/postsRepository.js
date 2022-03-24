@@ -1,12 +1,11 @@
 import connection from "../database.js";
 
-async function getTopics(hashtag) {
+async function validateTopic(hashtag) {
   return connection.query(
     `
     SELECT * FROM topics
-    WHERE topics.topic=$1
-    `,
-    [hashtag]
+    WHERE topics.topic=${hashtag}
+    `
   );
 }
 
@@ -24,6 +23,6 @@ async function getPostsByHashtag(hashtag) {
 }
 
 export const postsRepository = {
-  getTopics,
+  validateTopic,
   getPostsByHashtag,
 };
