@@ -21,6 +21,8 @@ export async function getPosts(req, res) {
   ];
   try {
     const { rows } = await postsRepository.getPosts();
+    // console.log(rows.length);
+    // console.log(rows[0]);
 
     let result = [];
     test.map((element) => {
@@ -30,7 +32,7 @@ export async function getPosts(req, res) {
       };
       urlMetadata(element.link)
         .then(async function ({ url, title, description, image }) {
-          item = { ...item, url, title, description, image };
+          item.link = { url, title, description, image };
           result.push(item);
         })
         .catch((error) => console.log("error: ", error));
@@ -39,7 +41,6 @@ export async function getPosts(req, res) {
       res.send(result).status(200);
     }, test.length * 500);
   } catch (e) {
-    console.log(e);
     res.status(500).send(e);
   }
 }

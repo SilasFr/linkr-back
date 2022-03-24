@@ -2,14 +2,13 @@ import connection from "../database.js";
 
 async function getPosts() {
   return connection.query(`
-        SELECT p.link, p.description, u.name AS "userName", u."profilePic" FROM "postsTopics" 
-          JOIN posts p ON "postsTopics"."postId" = p.id
-          JOIN topics ON topics.id = "postsTopics"."topicId"
+        SELECT SUM(lp.id) AS likes, p.link, p.description, u.name AS "userName", u."profilePic" FROM "likedPost" lp
+          JOIN posts p ON lp."postId" = p.id
           JOIN users u ON p.author = u.id
-        GROUP BY "postsTopics"."postId"
-        ORDER BY createdAt DESC
+        GROUP BY  lp.id, p.id, u.id 
+        ORDER BY p.createdat DESC
         LIMIT 20
-    `);
+    `); // trocar campo p.createdat para p."createdAt"
 }
 
 export const postsRepository = { getPosts };
