@@ -12,11 +12,9 @@ export async function newPost(req, res) {
 
   try {
     await postsRepository.insertPost(userData, newPostData);
-    console.log(newPostData);
-    console.log(userData);
+
     return res.sendStatus(201);
   } catch (error) {
-    console.log(error);
     return res.status(500).send("!erro! cadastrando novo post");
   }
 }
@@ -24,7 +22,6 @@ export async function newPost(req, res) {
 export async function getPosts(req, res) {
   try {
     const { rows } = await postsRepository.getPosts();
-    console.log(rows);
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
@@ -32,7 +29,6 @@ export async function getPosts(req, res) {
     let result = rows.map((element) => ({ ...element }));
     res.send(result);
   } catch (e) {
-    console.log(e);
     res.status(500).send(e);
   }
 }

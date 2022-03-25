@@ -1,8 +1,8 @@
-import { v4 as tokenGenerator } from 'uuid';
-import bcrypt from 'bcrypt';
-import dayjs from 'dayjs';
-import { loginRepository } from '../repositories/loginRepository.js';
-import { userRepository } from '../repositories/userRepository.js';
+import { v4 as tokenGenerator } from "uuid";
+import bcrypt from "bcrypt";
+import dayjs from "dayjs";
+import { loginRepository } from "../repositories/loginRepository.js";
+import { userRepository } from "../repositories/userRepository.js";
 
 export async function login(req, res) {
   const { email, password } = req.body;
@@ -18,7 +18,7 @@ export async function login(req, res) {
     if (bcrypt.compareSync(password, encryptedPassword)) {
       const token = tokenGenerator();
 
-      await loginRepository.createSession(id, token, dayjs().add(1, 'day'));
+      await loginRepository.createSession(id, token, dayjs().add(1, "day"));
 
       return res
         .send({ token: token, profilePic: profilePic, name: name })
@@ -52,7 +52,6 @@ export async function getSession(req, res) {
 
     return res.send(user).status(200);
   } catch (e) {
-    console.log(e);
     res.send(e).status(500);
   }
 }
