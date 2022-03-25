@@ -6,7 +6,6 @@ export function postValidationMiddleware(req, res, next) {
 
   if (newPostValidation.error) {
     const errorDetails = newPostValidation.error.details[0];
-
     return res.status(500).send(errorDetails.message);
   }
   res.locals.newPostData = newPostValidation.value;
