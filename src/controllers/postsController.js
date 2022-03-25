@@ -23,6 +23,10 @@ export async function getPosts(req, res) {
   try {
     const { rows } = await postsRepository.getPosts();
 
+    if (rows.length === 0) {
+      return res.send("There are no posts yet");
+    }
+
     let result = rows.map((element) => ({ ...element }));
     res.send(result);
   } catch (e) {
