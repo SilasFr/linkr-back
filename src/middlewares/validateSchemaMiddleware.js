@@ -1,11 +1,13 @@
 export function validateSchemaMiddleware(schema) {
   return (req, res, next) => {
-    const validation = schema.validate(req.body);
+    const payload = req.body;
+    const validation = schema.validate(payload);
 
     if (validation.error) {
       return res.sendStatus(422);
     }
 
+    res.locals.payload = payload;
     next();
   };
 }
