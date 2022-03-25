@@ -12,6 +12,8 @@ export async function newPost(req, res) {
 
   try {
     await postsRepository.insertPost(userData, newPostData);
+    console.log(newPostData);
+    console.log(userData);
     return res.sendStatus(201);
   } catch (error) {
     console.log(error);
@@ -22,7 +24,7 @@ export async function newPost(req, res) {
 export async function getPosts(req, res) {
   try {
     const { rows } = await postsRepository.getPosts();
-
+    console.log(rows);
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
