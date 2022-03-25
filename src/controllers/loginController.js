@@ -26,8 +26,8 @@ export async function login(req, res) {
     } else {
       return res.sendStatus(401);
     }
-  } catch {
-    return res.sendStatus(500);
+  } catch (e) {
+    return res.status(500).send(e);
   }
 }
 
@@ -52,7 +52,6 @@ export async function getSession(req, res) {
 
     return res.send(user).status(200);
   } catch (e) {
-    console.log(e);
     res.send(e).status(500);
   }
 }

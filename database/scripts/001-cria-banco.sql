@@ -6,11 +6,12 @@ CREATE TABLE users(
 	"profilePic" TEXT NOT NULL
 );
 
-CREATE TABLE sessions(
+CREATE TABLE links(
 	id SERIAL PRIMARY KEY,
-	"userId" INTEGER NOT NULL REFERENCES users(id),
-	token TEXT NOT NULL,
-	"expiresAt" TIMESTAMP WITH TIME ZONE NOT NULL
+	link TEXT NOT NULL,
+	title TEXT NOT NULL,
+	description TEXT,
+	image TEXT NOT NULL	
 );
 
 CREATE TABLE links(
@@ -25,6 +26,7 @@ CREATE TABLE posts(
 	id SERIAL PRIMARY KEY,
 	author INTEGER NOT NULL REFERENCES users(id),
 	description TEXT NOT NULL,
+<<<<<<< HEAD
 	"linkId" INTEGER NOT NULL REFERENCES posts(id),
 	"createdAt" DATE NOT NULL DEFAULT NOW()
 );
@@ -33,23 +35,38 @@ CREATE TABLE linksPosts(
 	id SERIAL PRIMARY KEY,
 	"linkId" INTEGER NOT NULL REFERENCES links(id),
 	"postId" INTEGER NOT NULL REFERENCES posts(id)
+=======
+	"linkId" INTEGER NOT NULL REFERENCES links(id),
+	"createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+>>>>>>> main
+);
+
+CREATE TABLE sessions(
+	id SERIAL PRIMARY KEY,
+	"userId" INTEGER NOT NULL REFERENCES users(id),
+	token TEXT NOT NULL,
+	"expiresAt" TIMESTAMP WITH TIME ZONE NOT NULL
+);
+
+CREATE TABLE "linksPosts"(
+	id SERIAL PRIMARY KEY,
+	"linkId" INTEGER NOT NULL REFERENCES links(id),
+	"postsId" INTEGER NOT NULL REFERENCES posts(id)
 );
 
 CREATE TABLE "likedPost"(
-	id SERIAL PRIMARY KEY,
-	"postId" INTEGER NOT NULL REFERENCES posts(id),
-	"likeAuthor" INTEGER NOT NULL REFERENCES users(id)
+    id SERIAL PRIMARY KEY,
+    "postId" INTEGER NOT NULL REFERENCES posts(id),
+    "likeAuthor" INTEGER NOT NULL REFERENCES users(id)
 );
 
 CREATE TABLE topics(
-	id SERIAL PRIMARY KEY,
-	topic TEXT NOT NULL UNIQUE
+    id SERIAL PRIMARY KEY,
+    topic TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE "postsTopics"(
-	id SERIAL PRIMARY KEY,
-	"postId" INTEGER NOT NULL REFERENCES posts(id),
-	"topicId" INTEGER NOT NULL REFERENCES topics(id)
+    id SERIAL PRIMARY KEY,
+    "postId" INTEGER NOT NULL REFERENCES posts(id),
+    "topicId" INTEGER NOT NULL REFERENCES topics(id)
 );
-
-

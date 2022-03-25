@@ -1,9 +1,9 @@
 {
   "name": "linkr-back",
-  "type": "module",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
@@ -21,10 +21,10 @@
     "joi": "^17.6.0",
     "pg": "^8.7.3",
     "sqlstring": "^2.3.3",
+    "url-metadata": "^2.5.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "eslint": "^8.11.0",
     "nodemon": "^2.0.15"
   }
 }
