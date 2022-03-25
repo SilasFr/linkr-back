@@ -2,14 +2,21 @@ import connection from "../database.js";
 
 async function insertPost(userData, postData) {
   const author = userData.id;
-  const { link, description } = postData;
+  const { link, title, description, image } = postData;
 
-  await connection.query(
-    `
-    INSERT INTO posts (author, link, description)
+  const { rows: lastLink } = await connection.query(`
+    INSERT INTO links (link, title, description, image)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id;
+    `,
+    [link, title, description, image]
+  );
+    
+  await connection.query(`
+    INSERT INTO posts (author, "linkId", description)
     VALUES ($1, $2, $3);
     `,
-    [author, link, description]
+    [author, lastLink[0].id, description]
   );
 }
 

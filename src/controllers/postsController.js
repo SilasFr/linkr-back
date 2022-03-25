@@ -4,6 +4,12 @@ import urlMetadata from "url-metadata";
 export async function newPost(req, res) {
   const newPostData = res.locals.newPostData;
   const userData = res.locals.user;
+  
+  const { url, title, image } = await urlMetadata(newPostData.link);
+  newPostData.link = url;
+  newPostData.title = title;
+  newPostData.image = image;
+
   try {
     await postsRepository.insertPost(userData, newPostData);
     return res.sendStatus(201);
