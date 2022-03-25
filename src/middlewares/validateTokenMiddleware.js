@@ -13,13 +13,13 @@ export async function validateTokenMiddleware(req, res, next) {
   );
   const [session] = sessions;
   if (!session) {
-    return res.redirect(401, "/");
+    return res.sendStatus(401);
   }
 
   const { rows: users } = await userRepository.getUserById(session.userId);
   const [user] = users;
   if (!user) {
-    return res.redirect(401, "/");
+    return res.sendStatus(401);
   }
 
   res.locals.user = user;
