@@ -38,7 +38,7 @@ export async function deletePostById(req, res) {
 
     const { rows } = await postsRepository.getPostById(postId);
     const post = rows[0];
-    if (user.id !== post.id) {
+    if (user.id !== post.author) {
       return res.status(409);
     }
     await postsRepository.deletePost(postId);
