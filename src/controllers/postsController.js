@@ -4,7 +4,7 @@ import urlMetadata from "url-metadata";
 export async function newPost(req, res) {
   const newPostData = res.locals.newPostData;
   const userData = res.locals.user;
-  
+
   const { url, title, image } = await urlMetadata(newPostData.link);
   newPostData.link = url;
   newPostData.title = title;
@@ -27,6 +27,15 @@ export async function getPosts(req, res) {
     res.send(result);
   } catch (e) {
     console.log(e);
+    res.status(500).send(e);
+  }
+}
+
+export async function deletePostById(req, res) {
+  try {
+    const user = res.locals.user;
+    res.send("deleted");
+  } catch (e) {
     res.status(500).send(e);
   }
 }
