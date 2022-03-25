@@ -35,7 +35,18 @@ async function getPosts() {
     `);
 }
 
+async function likePost(postId, userId) {
+  await connection.query(
+    `
+    INSERT INTO "likedPost" ("postId", "likeAuthor")
+    VALUES ($1, $2);
+    `,
+    [ postId, userId]
+  );
+}
+
 export const postsRepository = {
   insertPost,
   getPosts,
+  likePost,
 };

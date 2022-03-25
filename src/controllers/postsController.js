@@ -1,4 +1,5 @@
 import { postsRepository } from "../repositories/postsRepository.js";
+import { userRepository } from '../repositories/userRepository.js';
 import urlMetadata from "url-metadata";
 
 export async function newPost(req, res) {
@@ -28,5 +29,23 @@ export async function getPosts(req, res) {
   } catch (e) {
     console.log(e);
     res.status(500).send(e);
+  }
+}
+
+export async function likePost(req, res) {
+  const { postId, userId } = res.locals.newLikeData;
+
+  try {
+    // 1 -testar se postId e userId são válidos
+    
+    
+    // 2- inserir na tabela likedPost os id's
+
+    const newLikedPost = await postsRepository.likePost(postId, userId);
+    console.log(newLikedPost, '<<<---');
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('!erro! ao curtir post');
   }
 }
