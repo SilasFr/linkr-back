@@ -34,7 +34,16 @@ export async function getPosts(req, res) {
 export async function deletePostById(req, res) {
   try {
     const user = res.locals.user;
-    res.send("deleted");
+    const postId = res.locals.payload;
+
+    const { rows } = await postsRepository.getPostById(postId);
+    const post = rows[0];
+    if (user.id !== post.id) {
+      return res.status(409);
+    }
+    await postsRepository.deletePost(postId);
+
+    res.sendStatus(200);
   } catch (e) {
     res.status(500).send(e);
   }

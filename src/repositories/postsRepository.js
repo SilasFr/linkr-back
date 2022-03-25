@@ -4,15 +4,17 @@ async function insertPost(userData, postData) {
   const author = userData.id;
   const { link, title, description, image } = postData;
 
-  const { rows: lastLink } = await connection.query(`
+  const { rows: lastLink } = await connection.query(
+    `
     INSERT INTO links (link, title, description, image)
     VALUES ($1, $2, $3, $4)
     RETURNING id;
     `,
     [link, title, description, image]
   );
-    
-  await connection.query(`
+
+  await connection.query(
+    `
     INSERT INTO posts (author, "linkId", description)
     VALUES ($1, $2, $3);
     `,
@@ -35,7 +37,28 @@ async function getPosts() {
     `);
 }
 
+async function getPostById(id) {
+  return connection.query(
+    `
+    SELECT * FROM posts WHERE id = $1
+  `,
+    [id]
+  );
+}
+
+async function deletePost(id) {
+  return connection.query(
+    `
+  DELETE FROM posts 
+  WHERE id=$1
+`,
+    [id]
+  );
+}
+
 export const postsRepository = {
   insertPost,
   getPosts,
+  getPostById,
+  deletePost,
 };
