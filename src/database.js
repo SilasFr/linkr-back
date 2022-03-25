@@ -10,7 +10,7 @@ const databaseConfig = {
   port: 5432,
   user: "postgres",
   password: "123456",
-  database: "linkr_teste",
+  database: "linkr",
 };
 
 // const databaseConfig = {
