@@ -36,20 +36,18 @@ CREATE TABLE "linksPosts"(
 );
 
 CREATE TABLE "likedPost"(
-	id SERIAL PRIMARY KEY,
-	"postId" INTEGER NOT NULL REFERENCES posts(id),
-	"likeAuthor" INTEGER NOT NULL REFERENCES users(id)
+    id SERIAL PRIMARY KEY,
+    "postId" INTEGER NOT NULL REFERENCES posts(id),
+    "likeAuthor" INTEGER NOT NULL REFERENCES users(id)
 );
 
 CREATE TABLE topics(
-	id SERIAL PRIMARY KEY,
-	topic TEXT NOT NULL UNIQUE
+    id SERIAL PRIMARY KEY,
+    topic TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE "postsTopics"(
-	id SERIAL PRIMARY KEY,
-	"postId" INTEGER NOT NULL REFERENCES posts(id),
-	"topicId" INTEGER NOT NULL REFERENCES topics(id)
+    id SERIAL PRIMARY KEY,
+    "postId" INTEGER NOT NULL REFERENCES posts(id),
+    "topicId" INTEGER NOT NULL REFERENCES topics(id)
 );
-
-
