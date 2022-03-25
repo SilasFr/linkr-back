@@ -1,4 +1,4 @@
-import { postsRepository } from '../repositories/postsRepository.js';
+import { postsRepository } from "../repositories/postsRepository.js";
 
 export async function newPost(req, res) {
   const newPostData = res.locals.newPostData;
@@ -7,7 +7,6 @@ export async function newPost(req, res) {
     await postsRepository.insertPost(userData, newPostData);
     return res.sendStatus(201);
   } catch (error) {
-    console.log(error);
-    return res.status(500).send('!erro! cadastrando novo post');
+    return res.status(500).send("!erro! cadastrando novo post");
   }
 }
