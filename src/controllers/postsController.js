@@ -34,7 +34,6 @@ export async function getPosts(req, res) {
 }
 
 export async function deletePostById(req, res) {
-  //  console.log("u got this far");
   try {
     const user = res.locals.user;
     const postId = req.params.id;
@@ -48,7 +47,6 @@ export async function deletePostById(req, res) {
 
     res.sendStatus(200);
   } catch (e) {
-    console.log(e);
     res.status(500).send(e);
   }
 }
