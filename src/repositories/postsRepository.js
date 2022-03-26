@@ -36,6 +36,15 @@ async function getPosts() {
     `);
 }
 
+async function getPostsByUserId(id) {
+  return connection.query(
+    `
+      SELECT * from posts WHERE author = $1
+    `,
+    [id]
+  );
+}
+
 async function getPostById(id) {
   return connection.query(
     `
@@ -58,6 +67,7 @@ async function deletePost(id) {
 export const postsRepository = {
   insertPost,
   getPosts,
+  getPostsByUserId,
   getPostById,
   deletePost,
 };
