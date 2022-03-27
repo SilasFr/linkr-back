@@ -56,7 +56,7 @@ export async function getPostsByUserId(req, res) {
 export async function deletePostById(req, res) {
   try {
     const user = res.locals.user;
-    const postId = res.locals.payload;
+    const postId = req.params.id;
 
     const { rows } = await postsRepository.getPostById(postId);
     const post = rows[0];
