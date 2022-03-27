@@ -39,7 +39,17 @@ async function getPosts() {
 async function getPostsByUserId(id) {
   return connection.query(
     `
-      SELECT * from posts WHERE author = $1
+    SELECT p.id, p.description, 
+      l.link, l.title, l.description, l.image,
+      u.name AS "userName", u."profilePic"
+    FROM posts p
+      JOIN users u ON u.id = p.author
+      JOIN links l ON p."linkId"=l.id
+      WHERE u.id=$1
+    GROUP BY  p.id, u.id, l.id
+    ORDER BY p."createdAt" DESC
+    LIMIT 20
+    
     `,
     [id]
   );
