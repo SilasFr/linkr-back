@@ -37,7 +37,7 @@ CREATE TABLE "linksPosts"(
 
 CREATE TABLE "likedPost"(
     id SERIAL PRIMARY KEY,
-    "postId" INTEGER NOT NULL REFERENCES posts(id),
+    "postId" INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
     "likeAuthor" INTEGER NOT NULL REFERENCES users(id)
 );
 
@@ -48,6 +48,6 @@ CREATE TABLE topics(
 
 CREATE TABLE "postsTopics"(
     id SERIAL PRIMARY KEY,
-    "postId" INTEGER NOT NULL REFERENCES posts(id),
+    "postId" INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
     "topicId" INTEGER NOT NULL REFERENCES topics(id)
 );
