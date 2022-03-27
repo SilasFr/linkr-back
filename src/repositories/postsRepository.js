@@ -55,9 +55,16 @@ async function deletePost(id) {
   );
 }
 
+async function findPostId(userId) {
+  return connection.query(`
+    SELECT p.id FROM posts p WHERE p.author=$1 ORDER BY id DESC LIMIT 1
+  `, [userId]);
+}
+
 export const postsRepository = {
   insertPost,
   getPosts,
   getPostById,
   deletePost,
+  findPostId,
 };
