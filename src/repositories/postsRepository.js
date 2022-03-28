@@ -73,7 +73,7 @@ async function getPostsByUserId(id) {
       JOIN users u ON u.id = p.author
       JOIN links l ON p."linkId"=l.id
       WHERE u.id=$1
-    GROUP BY  p.id, u.id, l.idrestful api
+    GROUP BY  p.id, u.id, l.id
     ORDER BY p."createdAt" DESC
     LIMIT 20
     
@@ -122,6 +122,26 @@ async function editPostById(postData) {
     [description, id]
   );
 }
+async function likePost(id, userId) {
+  return connection.query(
+    `
+      INSERT INTo "likedPost"
+        ("postId", "likeAuthor")
+        VALUES
+        ($1, $2)
+  `,
+    [id, userId]
+  );
+}
+
+async function dislikePost(id) {
+  return connection.query(
+    `
+    DELETE FROM "likedPost" WHERE "postId"=$1
+  `,
+    [id]
+  );
+}
 
 export const postsRepository = {
   validateTopic,
@@ -133,4 +153,6 @@ export const postsRepository = {
   deletePost,
   findPostId,
   editPostById,
+  likePost,
+  dislikePost,
 };

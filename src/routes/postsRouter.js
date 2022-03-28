@@ -3,6 +3,8 @@ import {
   editPostById,
   getPostById,
   getPostsByHashtag,
+  dislikePostById,
+  likePostById,
 } from "../controllers/postsController.js";
 import { validateTokenMiddleware } from "../middlewares/validateTokenMiddleware.js";
 import { postValidationMiddleware } from "../middlewares/postValidationMiddleware.js";
@@ -35,6 +37,13 @@ postsRouter.put(
   validateTokenMiddleware,
   postValidationMiddleware,
   editPostById
+);
+
+postsRouter.post("/posts/:id/like", validateTokenMiddleware, likePostById);
+postsRouter.post(
+  "/posts/:id/dislike",
+  validateTokenMiddleware,
+  dislikePostById
 );
 
 export default postsRouter;

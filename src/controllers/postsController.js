@@ -2,6 +2,7 @@ import SqlString from "sqlstring";
 import { postsRepository } from "../repositories/postsRepository.js";
 import { userRepository } from "../repositories/userRepository.js";
 import urlMetadata from "url-metadata";
+// import res from "express/lib/response";
 
 export async function getPostsByHashtag(req, res) {
   const hashtag = SqlString.escape(req.params.hashtag);
@@ -121,5 +122,30 @@ export async function getPostById(req, res) {
     res.send(rows[0]);
   } catch (e) {
     res.sendStatus(500);
+  }
+}
+export async function likePostById(req, res) {
+  try {
+    const user = res.locals.user;
+    const { id } = req.params;
+    if (!user || !id) {
+      return res.sendStatus(409);
+    }
+
+    await postsRepository.likePost(id, user.id);
+  } catch (e) {
+    res.sendStatus(500);
+  }
+}
+
+export async function dislikePostById(req, res) {
+  try {
+    const { id } = req.params;
+
+    await postsRepository.dislikePost(id);
+    res.status(200).send("ok");
+  } catch (e) {
+    console.log(e);
+    return res.sendStatus(500);
   }
 }
