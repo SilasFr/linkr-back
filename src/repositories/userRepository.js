@@ -34,7 +34,7 @@ async function searchUser(name) {
     `
     SELECT u.id, u.name, u."profilePic"
     FROM users u
-    WHERE u.name ilike '%${name}'
+    WHERE u.name ilike '${name + "%"}'
     `
   );
 }
