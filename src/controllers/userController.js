@@ -19,3 +19,19 @@ export async function createUser(req, res) {
     res.status(500).send(e);
   }
 }
+
+export async function searchUser(req, res) {
+  try {
+    const { user } = req.query;
+
+    const fetchedUsers = await userRepository.searchUser(user);
+    if (fetchedUsers.rowCount === 0) {
+      return res.send([]);
+    }
+
+    res.status(200).send(fetchedUsers.rows);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send(e);
+  }
+}
