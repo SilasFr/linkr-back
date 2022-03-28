@@ -113,6 +113,18 @@ async function findPostId(userId) {
   );
 }
 
+async function editPostById(postData) {
+  const { id, description } = postData;
+
+  await connection.query(
+    `
+    UPDATE posts 
+    SET description=$1
+    WHERE id=$2
+    `,
+    [description, id]
+  );
+}
 async function likePost(id, userId) {
   return connection.query(
     `
@@ -143,6 +155,7 @@ export const postsRepository = {
   getPostById,
   deletePost,
   findPostId,
+  editPostById,
   likePost,
   dislikePost,
 };

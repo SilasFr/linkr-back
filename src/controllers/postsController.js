@@ -107,6 +107,38 @@ export async function deletePostById(req, res) {
   }
 }
 
+export async function editPostById(req, res) {
+  try {
+    const newPostData = res.locals.newPostData;
+    const user = res.locals.user;
+    const postId = req.params.id;
+    const postData = {
+      id: req.params.id,
+      description: newPostData.description,
+      link: newPostData.link,
+    };
+
+    const { rows } = await postsRepository.getPostById(postId);
+    const post = rows[0];
+    if (user.id !== post.author) {
+      return res.status(409);
+    }
+
+    await postsRepository.editPostById(postData);
+
+    res.sendStatus(200);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+}
+export async function getPostById(req, res) {
+  try {
+    const { rows } = await postsRepository.getPostById(req.params.id);
+    res.send(rows[0]);
+  } catch (e) {
+    res.sendStatus(500);
+  }
+}
 export async function likePostById(req, res) {
   try {
     const user = res.locals.user;
