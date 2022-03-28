@@ -1,6 +1,11 @@
 import { Router } from "express";
-import { postValidationMiddleware } from "../middlewares/postValidationMiddleware.js";
+import {
+  dislikePostById,
+  getPostsByHashtag,
+  likePostById,
+} from "../controllers/postsController.js";
 import { validateTokenMiddleware } from "../middlewares/validateTokenMiddleware.js";
+import { postValidationMiddleware } from "../middlewares/postValidationMiddleware.js";
 import {
   deletePostById,
   getPosts,
@@ -10,7 +15,11 @@ import {
 import { newPost } from "../controllers/postsController.js";
 
 const postsRouter = Router();
-
+postsRouter.get(
+  "/hashtag/:hashtag",
+  validateTokenMiddleware,
+  getPostsByHashtag
+);
 postsRouter.post(
   "/posts/new",
   postValidationMiddleware,
@@ -21,6 +30,11 @@ postsRouter.get("/timeline", validateTokenMiddleware, getPosts);
 postsRouter.get("/timeline/:id", validateTokenMiddleware, getPostsByUserId);
 postsRouter.delete("/posts/:id", validateTokenMiddleware, deletePostById);
 
-//asiduhbasodyb
+postsRouter.post("/posts/:id/like", validateTokenMiddleware, likePostById);
+postsRouter.post(
+  "/posts/:id/dislike",
+  validateTokenMiddleware,
+  dislikePostById
+);
 
 export default postsRouter;

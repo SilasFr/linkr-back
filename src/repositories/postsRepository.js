@@ -1,5 +1,32 @@
 import connection from "../database.js";
 
+async function validateTopic(hashtag) {
+  return connection.query(
+    `
+    SELECT * FROM topics
+    WHERE topics.topic=${hashtag}
+    `
+  );
+}
+
+async function getPostsByHashtag(hashtag) {
+  return connection.query(
+    `
+    SELECT p.id, p.description, 
+          l.link, l.title, l.description, l.image,
+          u.name AS "userName", u."profilePic"
+        FROM posts p
+          JOIN users u ON u.id = p.author
+          JOIN links l ON p."linkId"=l.id
+          JOIN "postsTopics" pt ON p.id=pt."postId"
+          JOIN topics t ON pt."topicId"=t.id
+          WHERE t.topic=$1
+        GROUP BY  p.id, u.id, l.id
+        ORDER BY p."createdAt" DESC
+    `,
+    [hashtag]
+  );
+}
 async function insertPost(userData, postData) {
   const author = userData.id;
   const { link, title, description, image } = postData;
@@ -86,11 +113,36 @@ async function findPostId(userId) {
   );
 }
 
+async function likePost(id, userId) {
+  return connection.query(
+    `
+      INSERT INTo "likedPost"
+        ("postId", "likeAuthor")
+        VALUES
+        ($1, $2)
+  `,
+    [id, userId]
+  );
+}
+
+async function dislikePost(id) {
+  return connection.query(
+    `
+    DELETE FROM "likedPost" WHERE "postId"=$1
+  `,
+    [id]
+  );
+}
+
 export const postsRepository = {
+  validateTopic,
+  getPostsByHashtag,
   insertPost,
   getPosts,
   getPostsByUserId,
   getPostById,
   deletePost,
   findPostId,
+  likePost,
+  dislikePost,
 };

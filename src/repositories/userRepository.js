@@ -39,10 +39,20 @@ async function getUserById(id) {
     [id]
   );
 }
+async function searchUser(name) {
+  return connection.query(
+    `
+    SELECT u.id, u.name, u."profilePic"
+    FROM users u
+    WHERE u.name ilike '${name + "%"}'
+    `
+  );
+}
 
 export const userRepository = {
   createUser,
   getUserByEmail,
   getUserById,
   getUserByToken,
+  searchUser,
 };

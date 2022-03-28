@@ -14,12 +14,31 @@ CREATE TABLE links(
 	image TEXT NOT NULL	
 );
 
+CREATE TABLE links(
+	id SERIAL PRIMARY KEY,
+	link TEXT NOT NULL,
+	title TEXT NOT NULL,
+	description TEXT,
+	image TEXT NOT NULL
+);
+
 CREATE TABLE posts(
 	id SERIAL PRIMARY KEY,
 	author INTEGER NOT NULL REFERENCES users(id),
 	description TEXT NOT NULL,
+<<<<<<< HEAD
+	"linkId" INTEGER NOT NULL REFERENCES posts(id),
+	"createdAt" DATE NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE linksPosts(
+	id SERIAL PRIMARY KEY,
+	"linkId" INTEGER NOT NULL REFERENCES links(id),
+	"postId" INTEGER NOT NULL REFERENCES posts(id)
+=======
 	"linkId" INTEGER NOT NULL REFERENCES links(id),
 	"createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+>>>>>>> main
 );
 
 CREATE TABLE sessions(
