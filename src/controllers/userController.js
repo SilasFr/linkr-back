@@ -21,18 +21,17 @@ export async function createUser(req, res) {
 }
 
 export async function searchUser(req, res) {
-  const users = [
-    {
-      name: "João Amongus",
-      image:
-        "https://www.pngitem.com/pimgs/m/581-5813504_avatar-dummy-png-transparent-png.png",
-    },
-    {
-      name: "João Avatares",
-      image:
-        "https://www.kindpng.com/picc/m/21-215449_cabea-o-boneco-avatar-homem-gravata-jaqueta-dummy.png",
-    },
-  ];
+  try {
+    const { user } = req.query;
 
-  res.status(200).send(users);
+    const fetchedUsers = await userRepository.searchUser(user);
+    if (fetchedUsers.rowCount === 0) {
+      return res.send([]);
+    }
+
+    res.status(200).send(fetchedUsers.rows);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send(e);
+  }
 }
