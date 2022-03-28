@@ -90,3 +90,30 @@ export async function deletePostById(req, res) {
     res.status(500).send(e);
   }
 }
+
+export async function editPostById(req, res) {
+  try {
+    const newPostData = res.locals.newPostData;
+    const user = res.locals.user;
+    const { url, title, image } = await urlMetadata(newPostData.link);
+    const postData = {
+      id: req.params.id,
+      link: url,
+      title: title,
+      image: image,
+      description: newPostData.description,
+    };
+
+    const { rows } = await postsRepository.getPostById(postId);
+    const post = rows[0];
+    if (user.id !== post.author) {
+      return res.status(409);
+    }
+
+    await postsRepository.editPostById(postData);
+
+    res.sendStatus(200);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+}

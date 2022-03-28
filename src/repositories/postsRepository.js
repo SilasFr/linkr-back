@@ -73,7 +73,7 @@ async function getPostsByUserId(id) {
       JOIN users u ON u.id = p.author
       JOIN links l ON p."linkId"=l.id
       WHERE u.id=$1
-    GROUP BY  p.id, u.id, l.id
+    GROUP BY  p.id, u.id, l.idrestful api
     ORDER BY p."createdAt" DESC
     LIMIT 20
     
@@ -110,6 +110,28 @@ async function findPostId(userId) {
   );
 }
 
+async function editPostById(postData) {
+  const { id, link, title, description, image } = postData;
+
+  const { rows: lastLink } = await connection.query(
+    `
+    INSERT INTO links (link, title, description, image)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id;
+    `,
+    [link, title, description, image]
+  );
+
+  await connection.query(
+    `
+    UPDATE posts 
+    SET "linkId"=$1, description=$2
+    WHERE id=$3
+    `,
+    [lastLink[0].id, description, id]
+  );
+}
+
 export const postsRepository = {
   validateTopic,
   getPostsByHashtag,
@@ -119,4 +141,5 @@ export const postsRepository = {
   getPostById,
   deletePost,
   findPostId,
+  editPostById,
 };
