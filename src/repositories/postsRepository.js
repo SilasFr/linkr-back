@@ -51,6 +51,7 @@ async function insertPost(userData, postData) {
 
 async function getPosts() {
   return connection.query(`
+<<<<<<< HEAD
     SELECT p.id, p.description, 
     l.link, l.title, l.description, l.image,
     u.name AS "userName", u."profilePic",
@@ -62,16 +63,33 @@ async function getPosts() {
     GROUP BY  p.id, u.id, l.id
     ORDER BY p."createdAt" DESC
     LIMIT 20
+=======
+        SELECT p.id, p.description, p.author,
+          l.link, l.title, l.description, l.image,
+          u.name AS "userName", u."profilePic"
+        FROM posts p
+          JOIN users u ON u.id = p.author
+          JOIN links l ON p."linkId"=l.id
+        GROUP BY  p.id, u.id, l.id
+        ORDER BY p."createdAt" DESC
+        LIMIT 20
+>>>>>>> main
     `);
 }
 
 async function getPostsByUserId(id) {
   return connection.query(
     `
+<<<<<<< HEAD
     SELECT p.id, p.description, 
     l.link, l.title, l.description, l.image,
      u.name AS "userName", u."profilePic",
      ARRAY_AGG("likedPost"."likeAuthor") "likesList"
+=======
+    SELECT p.id, p.description,
+      l.link, l.title, l.description, l.image,
+      u.name AS "userName", u."profilePic"
+>>>>>>> main
     FROM posts p
       LEFT JOIN "likedPost" on "likedPost"."postId" = p.id
       JOIN users u ON u.id = p.author
