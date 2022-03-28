@@ -111,24 +111,15 @@ async function findPostId(userId) {
 }
 
 async function editPostById(postData) {
-  const { id, link, title, description, image } = postData;
-
-  const { rows: lastLink } = await connection.query(
-    `
-    INSERT INTO links (link, title, description, image)
-    VALUES ($1, $2, $3, $4)
-    RETURNING id;
-    `,
-    [link, title, description, image]
-  );
+  const { id, description } = postData;
 
   await connection.query(
     `
     UPDATE posts 
-    SET "linkId"=$1, description=$2
-    WHERE id=$3
+    SET description=$1
+    WHERE id=$2
     `,
-    [lastLink[0].id, description, id]
+    [description, id]
   );
 }
 

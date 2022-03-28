@@ -95,13 +95,11 @@ export async function editPostById(req, res) {
   try {
     const newPostData = res.locals.newPostData;
     const user = res.locals.user;
-    const { url, title, image } = await urlMetadata(newPostData.link);
+    const postId = req.params.id;
     const postData = {
       id: req.params.id,
-      link: url,
-      title: title,
-      image: image,
       description: newPostData.description,
+      link: newPostData.link,
     };
 
     const { rows } = await postsRepository.getPostById(postId);
@@ -115,5 +113,13 @@ export async function editPostById(req, res) {
     res.sendStatus(200);
   } catch (e) {
     res.status(500).send(e);
+  }
+}
+export async function getPostById(req, res) {
+  try {
+    const { rows } = await postsRepository.getPostById(req.params.id);
+    res.send(rows[0]);
+  } catch (e) {
+    res.sendStatus(500);
   }
 }
