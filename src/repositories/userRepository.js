@@ -20,6 +20,16 @@ async function getUserByEmail(email) {
     [email]
   );
 }
+
+async function getUserByToken(token) {
+  return connection.query(
+    `
+    SELECT "userId" FROM sessions WHERE token=$1
+  `,
+    [token]
+  );
+}
+
 async function getUserById(id) {
   return connection.query(
     `
@@ -43,5 +53,6 @@ export const userRepository = {
   createUser,
   getUserByEmail,
   getUserById,
+  getUserByToken,
   searchUser,
 };
