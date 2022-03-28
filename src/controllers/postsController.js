@@ -21,13 +21,22 @@ export async function newPost(req, res) {
 }
 
 export async function getPosts(req, res) {
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "");
   try {
     const { rows } = await postsRepository.getPosts();
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
 
-    let result = rows.map((element) => ({ ...element }));
+    const userIdSearch = await userRepository.getUserByToken(token);
+
+    let result = rows.map((element) => {
+      let likedByUser = false;
+      if (element.likesList.includes(userIdSearch.rows[0].userId))
+        likedByUser = true;
+      return { ...element, likedByUser };
+    });
     res.send(result);
   } catch (e) {
     res.status(500).send(e);
