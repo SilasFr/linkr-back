@@ -21,4 +21,6 @@ postsRouter.get("/timeline", validateTokenMiddleware, getPosts);
 postsRouter.get("/timeline/:id", validateTokenMiddleware, getPostsByUserId);
 postsRouter.delete("/posts/:id", validateTokenMiddleware, deletePostById);
 
+//asiduhbasodyb
+
 export default postsRouter;
