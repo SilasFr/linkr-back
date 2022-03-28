@@ -110,6 +110,27 @@ async function findPostId(userId) {
   );
 }
 
+async function likePost(id, userId) {
+  return connection.query(
+    `
+      INSERT INTo "likedPost"
+        ("postId", "likeAuthor")
+        VALUES
+        ($1, $2)
+  `,
+    [id, userId]
+  );
+}
+
+async function dislikePost(id) {
+  return connection.query(
+    `
+    DELETE FROM "likedPost" WHERE "postId"=$1
+  `,
+    [id]
+  );
+}
+
 export const postsRepository = {
   validateTopic,
   getPostsByHashtag,
@@ -119,4 +140,6 @@ export const postsRepository = {
   getPostById,
   deletePost,
   findPostId,
+  likePost,
+  dislikePost,
 };
