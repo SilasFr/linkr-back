@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { postValidationMiddleware } from "../middlewares/postValidationMiddleware.js";
+import { getPostsByHashtag } from "../controllers/postsController.js";
 import { validateTokenMiddleware } from "../middlewares/validateTokenMiddleware.js";
+import { postValidationMiddleware } from "../middlewares/postValidationMiddleware.js";
 import {
   deletePostById,
   getPosts,
@@ -10,7 +11,11 @@ import {
 import { newPost } from "../controllers/postsController.js";
 
 const postsRouter = Router();
-
+postsRouter.get(
+  "/hashtag/:hashtag",
+  validateTokenMiddleware,
+  getPostsByHashtag
+);
 postsRouter.post(
   "/posts/new",
   postValidationMiddleware,

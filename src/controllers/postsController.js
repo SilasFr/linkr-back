@@ -1,6 +1,25 @@
+import SqlString from "sqlstring";
 import { postsRepository } from "../repositories/postsRepository.js";
 import { userRepository } from "../repositories/userRepository.js";
 import urlMetadata from "url-metadata";
+
+export async function getPostsByHashtag(req, res) {
+  const hashtag = SqlString.escape(req.params.hashtag);
+  try {
+    const topic = await postsRepository.validateTopic(hashtag);
+    if (topic.rowCount < 1) return res.status(404).send("timeline");
+    const { rows } = await postsRepository.getPostsByHashtag();
+    if (rows.length === 0) {
+      return res.send("There are no posts yet");
+    }
+
+    let result = rows.map((element) => ({ ...element }));
+    res.send(result);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send(e);
+  }
+}
 
 export async function newPost(req, res) {
   const newPostData = res.locals.newPostData;
