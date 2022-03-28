@@ -36,6 +36,25 @@ async function getPosts() {
     `);
 }
 
+async function getPostsByUserId(id) {
+  return connection.query(
+    `
+    SELECT p.id, p.description, 
+      l.link, l.title, l.description, l.image,
+      u.name AS "userName", u."profilePic"
+    FROM posts p
+      JOIN users u ON u.id = p.author
+      JOIN links l ON p."linkId"=l.id
+      WHERE u.id=$1
+    GROUP BY  p.id, u.id, l.id
+    ORDER BY p."createdAt" DESC
+    LIMIT 20
+    
+    `,
+    [id]
+  );
+}
+
 async function getPostById(id) {
   return connection.query(
     `
@@ -56,14 +75,18 @@ async function deletePost(id) {
 }
 
 async function findPostId(userId) {
-  return connection.query(`
+  return connection.query(
+    `
     SELECT p.id FROM posts p WHERE p.author=$1 ORDER BY id DESC LIMIT 1
-  `, [userId]);
+  `,
+    [userId]
+  );
 }
 
 export const postsRepository = {
   insertPost,
   getPosts,
+  getPostsByUserId,
   getPostById,
   deletePost,
   findPostId,
