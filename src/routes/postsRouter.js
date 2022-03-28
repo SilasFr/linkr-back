@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { getPostsByHashtag } from "../controllers/postsController.js";
+import {
+  editPostById,
+  getPostsByHashtag,
+} from "../controllers/postsController.js";
 import { validateTokenMiddleware } from "../middlewares/validateTokenMiddleware.js";
 import { postValidationMiddleware } from "../middlewares/postValidationMiddleware.js";
 import {
@@ -25,5 +28,11 @@ postsRouter.post(
 postsRouter.get("/timeline", validateTokenMiddleware, getPosts);
 postsRouter.get("/timeline/:id", validateTokenMiddleware, getPostsByUserId);
 postsRouter.delete("/posts/:id", validateTokenMiddleware, deletePostById);
+postsRouter.put(
+  "/posts/:id",
+  validateTokenMiddleware,
+  postValidationMiddleware,
+  editPostById
+);
 
 export default postsRouter;
