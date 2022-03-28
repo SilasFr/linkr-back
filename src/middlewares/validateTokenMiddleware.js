@@ -4,6 +4,7 @@ import { userRepository } from "../repositories/userRepository.js";
 export async function validateTokenMiddleware(req, res, next) {
   const { authorization } = req.headers;
   const token = authorization?.replace("Bearer ", "");
+  console.log("chega?");
 
   if (!token) return res.sendStatus(404);
 

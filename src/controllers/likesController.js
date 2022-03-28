@@ -3,7 +3,7 @@ import { likesRepository } from "../repositories/likesRepository.js";
 
 export async function getLikesByPostId(req, res) {
   const postId = req.params.id;
-
+  console.log("asduohnasoihbaspn");
   try {
     const postSearch = await postsRepository.getPostById(postId);
     if (postSearch.rows.length === 0)
