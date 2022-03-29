@@ -44,6 +44,7 @@ async function insertPost(userData, postData) {
     `
     INSERT INTO posts (author, "linkId", description)
     VALUES ($1, $2, $3);
+    RETURNING id;
     `,
     [author, lastLink[0].id, description]
   );
