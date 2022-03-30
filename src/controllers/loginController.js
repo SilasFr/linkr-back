@@ -5,8 +5,8 @@ import { loginRepository } from "../repositories/loginRepository.js";
 import { userRepository } from "../repositories/userRepository.js";
 
 export async function login(req, res) {
-  const { email, password } = req.body;
-
+  const { email, password } = res.locals.payload;
+    
   try {
     const userSearch = await userRepository.getUserByEmail(email);
 
@@ -21,8 +21,9 @@ export async function login(req, res) {
       await loginRepository.createSession(id, token, dayjs().add(1, "day"));
 
       return res
-        .send({ token: token, profilePic: profilePic, name: name })
-        .status(200);
+        .status(200)
+        .send({ id, token, profilePic, name });
+        
     } else {
       return res.sendStatus(401);
     }
