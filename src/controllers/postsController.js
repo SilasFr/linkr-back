@@ -9,7 +9,8 @@ export async function getPostsByHashtag(req, res) {
   try {
     const topic = await postsRepository.validateTopic(hashtag);
     if (topic.rowCount < 1) return res.status(404).send("timeline");
-    const { rows } = await postsRepository.getPostsByHashtag();
+    const { rows } = await postsRepository.getPosts(hashtag);
+    console.log(rows);
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
@@ -45,7 +46,6 @@ export async function getPosts(req, res) {
   if (req.query.offset) {
     offset = `OFFSET ${req.query.offset}`;
   }
-  console.log(offset);
 
   const { authorization } = req.headers;
   const token = authorization?.replace("Bearer ", "");
@@ -65,6 +65,7 @@ export async function getPosts(req, res) {
     });
     res.send(result).status(200);
   } catch (e) {
+    console.log(e);
     res.status(500).send(e);
   }
 }
