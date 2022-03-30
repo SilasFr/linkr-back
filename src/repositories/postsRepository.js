@@ -49,7 +49,8 @@ async function insertPost(userData, postData) {
   );
 }
 
-async function getPosts() {
+async function getPosts(offset) {
+  console.log(offset);
   return connection.query(`
     SELECT p.id, p.description, 
     l.link, l.title, l.description, l.image,
@@ -61,7 +62,8 @@ async function getPosts() {
       JOIN links l ON p."linkId"=l.id
     GROUP BY  p.id, u.id, l.id
     ORDER BY p."createdAt" DESC
-    LIMIT 20
+    LIMIT 10
+    ${offset}
     `);
 }
 

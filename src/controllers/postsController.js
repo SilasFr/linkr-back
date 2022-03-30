@@ -41,10 +41,16 @@ export async function newPost(req, res) {
 }
 
 export async function getPosts(req, res) {
+  let offset = "";
+  if (req.query.offset) {
+    offset = `OFFSET ${req.query.offset}`;
+  }
+  console.log(offset);
+
   const { authorization } = req.headers;
   const token = authorization?.replace("Bearer ", "");
   try {
-    const { rows } = await postsRepository.getPosts();
+    const { rows } = await postsRepository.getPosts(offset);
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
@@ -57,7 +63,7 @@ export async function getPosts(req, res) {
         likedByUser = true;
       return { ...element, likedByUser };
     });
-    res.send(result);
+    res.send(result).status(200);
   } catch (e) {
     res.status(500).send(e);
   }
