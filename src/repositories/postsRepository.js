@@ -51,7 +51,7 @@ async function insertPost(userData, postData) {
 
 async function getPosts() {
   return connection.query(`
-    SELECT p.id, p.description, 
+    SELECT p.id, p.description, p.author,
     l.link, l.title, l.description, l.image,
     u.name AS "userName", u."profilePic",
     ARRAY_AGG("likedPost"."likeAuthor") "likesList"
