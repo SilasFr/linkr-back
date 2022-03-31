@@ -10,7 +10,6 @@ export async function getPostsByHashtag(req, res) {
     const topic = await postsRepository.validateTopic(hashtag);
     if (topic.rowCount < 1) return res.status(404).send("timeline");
     const { rows } = await postsRepository.getPosts(hashtag);
-    console.log(rows);
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
@@ -18,7 +17,6 @@ export async function getPostsByHashtag(req, res) {
     let result = rows.map((element) => ({ ...element }));
     res.send(result);
   } catch (e) {
-    console.log(e);
     res.status(500).send(e);
   }
 }
@@ -60,7 +58,6 @@ export async function getPosts(req, res) {
     });
     res.send(result);
   } catch (e) {
-    console.log(e);
     res.status(500).send(e);
   }
 }
@@ -162,7 +159,6 @@ export async function dislikePostById(req, res) {
     await postsRepository.dislikePost(id);
     res.status(200).send("ok");
   } catch (e) {
-    console.log(e);
     return res.sendStatus(500);
   }
 }
