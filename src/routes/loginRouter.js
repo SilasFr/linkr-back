@@ -1,5 +1,5 @@
 import { Router } from "express";
-import loginSchema from '../schemas/loginSchema.js';
+import loginSchema from "../schemas/loginSchema.js";
 import { validateSchemaMiddleware } from "../middlewares/validateSchemaMiddleware.js";
 import { getSession, login } from "../controllers/loginController.js";
 
