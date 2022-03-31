@@ -163,3 +163,19 @@ export async function dislikePostById(req, res) {
     return res.sendStatus(500);
   }
 }
+
+export async function readCommentsById(req, res) {
+  try {
+    const { user } = res.locals;
+    const { id: postId } = req.params;
+
+    const comments = await postsRepository.readComments(user.id, postId);
+    if (comments.rowCount === 0) {
+      return res.send([]);
+    }
+    res.status(200).send(comments.rows);
+  } catch (e) {
+    console.log(e);
+    return res.sendStatus(500);
+  }
+}

@@ -133,6 +133,22 @@ async function dislikePost(id) {
   );
 }
 
+async function readComments(userId, postId) {
+  return connection.query(
+    `
+    SELECT a.id, a.name, a."profilePic", c.content,
+    CASE WHEN f."followingUserId"= $1
+      THEN true ELSE false
+    END AS followed
+    FROM comments c
+    JOIN users a ON c.author=a.id
+    LEFT JOIN follows f ON a.id=f."followedUserId"
+    WHERE c."postId"=$2
+    `,
+    [userId, postId]
+  );
+}
+
 export const postsRepository = {
   validateTopic,
   insertPost,
@@ -144,4 +160,5 @@ export const postsRepository = {
   editPostById,
   likePost,
   dislikePost,
+  readComments,
 };
