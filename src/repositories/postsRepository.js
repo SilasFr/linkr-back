@@ -8,25 +8,6 @@ async function validateTopic(hashtag) {
     `
   );
 }
-
-async function getPostsByHashtag(hashtag) {
-  return connection.query(
-    `
-    SELECT p.id, p.description, p.author,
-          l.link, l.title, l.description, l.image,
-          u.name AS "userName", u."profilePic"
-        FROM posts p
-          JOIN users u ON u.id = p.author
-          JOIN links l ON p."linkId"=l.id
-          JOIN "postsTopics" pt ON p.id=pt."postId"
-          JOIN topics t ON pt."topicId"=t.id
-          WHERE t.topic=$1
-        GROUP BY  p.id, u.id, l.id
-        ORDER BY p."createdAt" DESC
-    `,
-    [hashtag]
-  );
-}
 async function insertPost(userData, postData) {
   const author = userData.id;
   const { link, title, description, image } = postData;
@@ -49,7 +30,12 @@ async function insertPost(userData, postData) {
   );
 }
 
-async function getPosts() {
+async function getPosts(hashtag = "") {
+  const hashtagQuery =
+    hashtag &&
+    `JOIN "postsTopics" pt ON p.id=pt."postId"
+        JOIN topics t ON pt."topicId"=t.id
+        WHERE t.topic=${hashtag}`;
   return connection.query(`
     SELECT p.id, p.description, p.author,
     l.link, l.title, l.description, l.image,
@@ -59,6 +45,7 @@ async function getPosts() {
       LEFT JOIN "likedPost" on "likedPost"."postId" = p.id
       JOIN users u ON u.id = p.author
       JOIN links l ON p."linkId"=l.id
+      ${hashtagQuery}
     GROUP BY  p.id, u.id, l.id
     ORDER BY p."createdAt" DESC
     LIMIT 20
@@ -148,7 +135,6 @@ async function dislikePost(id) {
 
 export const postsRepository = {
   validateTopic,
-  getPostsByHashtag,
   insertPost,
   getPosts,
   getPostsByUserId,
