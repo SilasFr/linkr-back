@@ -5,6 +5,7 @@ import {
   getPostsByHashtag,
   dislikePostById,
   likePostById,
+  repost,
 } from "../controllers/postsController.js";
 import { validateTokenMiddleware } from "../middlewares/validateTokenMiddleware.js";
 import { postValidationMiddleware } from "../middlewares/postValidationMiddleware.js";
@@ -45,5 +46,7 @@ postsRouter.post(
   validateTokenMiddleware,
   dislikePostById
 );
+
+postsRouter.post("/posts/:id/repost", validateTokenMiddleware, repost);
 
 export default postsRouter;

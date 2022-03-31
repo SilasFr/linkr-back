@@ -133,6 +133,16 @@ async function dislikePost(id) {
   );
 }
 
+async function insertRepost(userId, postId) {
+  return connection.query(
+    `
+    INSERT INTO reposts ("reposterId", "postId")
+    VALUES ($1, $2)
+  `,
+    [userId, postId]
+  );
+}
+
 export const postsRepository = {
   validateTopic,
   insertPost,
@@ -144,4 +154,5 @@ export const postsRepository = {
   editPostById,
   likePost,
   dislikePost,
+  insertRepost,
 };

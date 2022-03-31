@@ -41,20 +41,17 @@ export async function newPost(req, res) {
 }
 
 export async function getPosts(req, res) {
-  const { authorization } = req.headers;
-  const token = authorization?.replace("Bearer ", "");
   try {
+    const user = res.locals.user;
+
     const { rows } = await postsRepository.getPosts();
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
 
-    const userIdSearch = await userRepository.getUserByToken(token);
-
     let result = rows.map((element) => {
       let likedByUser = false;
-      if (element.likesList.includes(userIdSearch.rows[0].userId))
-        likedByUser = true;
+      if (element.likesList.includes(user.id)) likedByUser = true;
       return { ...element, likedByUser };
     });
     res.send(result);
@@ -161,5 +158,24 @@ export async function dislikePostById(req, res) {
     res.status(200).send("ok");
   } catch (e) {
     return res.sendStatus(500);
+  }
+}
+
+export async function repost(req, res) {
+  try {
+    const userId = res.locals.user.id;
+    const postId = req.params.id;
+
+    const result = await postsRepository.insertRepost(userId, postId);
+    if (!result.rowCount) {
+      return res
+        .status(500)
+        .send(
+          "Não foi possível repostar agora. Por favor tente novamente mais tarde"
+        );
+    }
+    res.sendStatus(201);
+  } catch (e) {
+    res.status(500).send(e);
   }
 }
