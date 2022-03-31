@@ -9,7 +9,8 @@ export async function getPostsByHashtag(req, res) {
   try {
     const topic = await postsRepository.validateTopic(hashtag);
     if (topic.rowCount < 1) return res.status(404).send("timeline");
-    const { rows } = await postsRepository.getPostsByHashtag();
+    const { rows } = await postsRepository.getPosts(hashtag);
+    console.log(rows);
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
@@ -61,7 +62,10 @@ export async function getPosts(req, res) {
     res.send(result);
   } catch (e) {
     console.log(e);
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     res.status(500).send(e);
   }
 }
