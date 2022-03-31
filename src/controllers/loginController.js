@@ -20,13 +20,7 @@ export async function login(req, res) {
 
       await loginRepository.createSession(id, token, dayjs().add(1, "day"));
 
-<<<<<<< HEAD
-      return res
-        .send({ token: token, profilePic: profilePic, name: name, id: id })
-        .status(200);
-=======
       return res.status(200).send({ id, token, profilePic, name });
->>>>>>> feat/infinitescroll
     } else {
       return res.sendStatus(401);
     }

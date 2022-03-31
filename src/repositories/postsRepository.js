@@ -31,7 +31,6 @@ async function insertPost(userData, postData) {
 }
 
 async function getPosts(offset) {
-  console.log("offset: ", offset);
   let hashtag = "";
   const hashtagQuery =
     hashtag &&

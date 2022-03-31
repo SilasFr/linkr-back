@@ -46,7 +46,7 @@ export async function newPost(req, res) {
 export async function getPosts(req, res) {
   let offset = "";
   if (req.query.offset) {
-    offset = `OFFSET ${req.query.offset}`;
+    offset = `OFFSET ${req.query.offset * 10}`;
   }
 
   const { authorization } = req.headers;
