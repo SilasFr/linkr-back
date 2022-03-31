@@ -11,7 +11,6 @@ export async function getPostsByHashtag(req, res) {
     const topic = await postsRepository.validateTopic(hashtag);
     if (topic.rowCount < 1) return res.status(404).send("timeline");
     const { rows } = await postsRepository.getPosts(hashtag);
-    console.log(rows);
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
@@ -150,7 +149,6 @@ export async function getPostById(req, res) {
 }
 export async function likePostById(req, res) {
   try {
-    console.log("res.locals: ", res.locals);
     const user = res.locals.user;
     const { id } = req.params;
     if (!user || !id) {
@@ -158,7 +156,7 @@ export async function likePostById(req, res) {
     }
 
     const likeSearch = await likesRepository.searchUserLike(id, user.id);
-    console.log("likeSearch: ", likeSearch);
+
     if (likeSearch.rows.length > 0) return res.sendStatus(409);
 
     await postsRepository.likePost(id, user.id);
@@ -175,6 +173,21 @@ export async function dislikePostById(req, res) {
     res.status(200).send("ok");
   } catch (e) {
     console.log(e);
+    return res.sendStatus(500);
+  }
+}
+
+export async function insertComment(req, res) {
+  const { id } = req.params;
+  const user = res.locals.user;
+  const { comment } = req.body;
+  try {
+    const postSearch = await postsRepository.getPostById(id);
+    if (postSearch.rows.length === 0) return res.sendStatus(404);
+
+    await postsRepository.coment(user.id, id, comment);
+    return res.sendStatus(201);
+  } catch {
     return res.sendStatus(500);
   }
 }
