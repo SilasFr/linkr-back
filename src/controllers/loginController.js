@@ -21,7 +21,7 @@ export async function login(req, res) {
       await loginRepository.createSession(id, token, dayjs().add(1, "day"));
 
       return res
-        .send({ token: token, profilePic: profilePic, name: name })
+        .send({ token: token, profilePic: profilePic, name: name, id: id })
         .status(200);
     } else {
       return res.sendStatus(401);

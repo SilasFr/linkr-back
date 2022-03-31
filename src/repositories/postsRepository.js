@@ -30,7 +30,9 @@ async function insertPost(userData, postData) {
   );
 }
 
-async function getPosts(hashtag = "", offset) {
+async function getPosts(offset) {
+  console.log("offset: ", offset);
+  let hashtag = "";
   const hashtagQuery =
     hashtag &&
     `JOIN "postsTopics" pt ON p.id=pt."postId"
