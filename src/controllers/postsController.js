@@ -27,17 +27,16 @@ export async function newPost(req, res) {
   const newPostData = res.locals.newPostData;
   const userData = res.locals.user;
 
-  try {
-    const { url, title, image } = await urlMetadata(newPostData.link);
-    newPostData.link = url;
-    newPostData.title = title;
-    newPostData.image = image;
+  const { url, title, image } = await urlMetadata(newPostData.link);
+  newPostData.link = url;
+  newPostData.title = title;
+  newPostData.image = image;
 
+  try {
     await postsRepository.insertPost(userData, newPostData);
 
     return res.sendStatus(201);
   } catch (error) {
-    console.log(error);
     return res.status(500).send("!erro! cadastrando novo post");
   }
 }
