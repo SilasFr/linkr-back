@@ -6,8 +6,8 @@ export function validateSchemaMiddleware(schema) {
     if (validation.error) {
       return res.sendStatus(422);
     }
-
-    res.locals.payload = payload;
+    
+    res.locals.payload = validation.value;
     next();
   };
 }
