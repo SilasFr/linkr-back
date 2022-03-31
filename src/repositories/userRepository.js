@@ -47,6 +47,7 @@ async function searchUser(userId, name) {
     FROM users u
     LEFT JOIN follows f ON u.id=f."followedUserId"
     WHERE u.name ilike '${name + "%"}'
+    ORDER BY followed
     LIMIT 10
     `,
     [userId]
