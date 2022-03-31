@@ -18,7 +18,7 @@ CREATE TABLE posts(
 	id SERIAL PRIMARY KEY,
 	author INTEGER NOT NULL REFERENCES users(id),
 	description TEXT NOT NULL,
-	"linkId" INTEGER NOT NULL REFERENCES posts(id),
+	"linkId" INTEGER NOT NULL REFERENCES links(id),
 	"createdAt" DATE NOT NULL DEFAULT NOW()
 );
 
