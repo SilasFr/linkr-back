@@ -5,13 +5,15 @@ dotenv.config();
 
 const { Pool } = pg;
 
-//Uitlizar .env
+//Utilizar .env
+
 const databaseConfig = {
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },
 };
+
 const connection = new Pool(databaseConfig);
 
 export default connection;
