@@ -39,13 +39,17 @@ async function getUserById(id) {
     [id]
   );
 }
-async function searchUser(name) {
+async function searchUser(userId, name) {
   return connection.query(
     `
-    SELECT u.id, u.name, u."profilePic"
+    SELECT u.id, u.name, u."profilePic",
+    CASE WHEN f."followingUserId" = $1 THEN true ELSE false END as followed
     FROM users u
+    LEFT JOIN follows f ON u.id=f."followedUserId"
     WHERE u.name ilike '${name + "%"}'
-    `
+    LIMIT 10
+    `,
+    [userId]
   );
 }
 
@@ -56,7 +60,8 @@ async function searchExactUserName(name) {
     FROM users
     WHERE name=$1;
     `,
-    [name]);
+    [name]
+  );
 }
 
 export const userRepository = {
