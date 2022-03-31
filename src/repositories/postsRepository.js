@@ -12,7 +12,7 @@ async function validateTopic(hashtag) {
 async function getPostsByHashtag(hashtag) {
   return connection.query(
     `
-    SELECT p.id, p.description, 
+    SELECT p.id, p.description, p.author,
           l.link, l.title, l.description, l.image,
           u.name AS "userName", u."profilePic"
         FROM posts p
