@@ -7,13 +7,18 @@ import { followRepository } from "../repositories/followRepository.js";
 // import res from "express/lib/response";
 
 export async function getPostsByHashtag(req, res) {
+  let offset = "";
+  if (req.query.offset) {
+    offset = `OFFSET ${req.query.offset * 10}`;
+  }
   const hashtag = SqlString.escape(req.params.hashtag);
   try {
+    const { user } = res.locals;
     const topic = await postsRepository.validateTopic(hashtag);
     if (topic.rowCount < 1) return res.status(404).send("timeline");
-    const { rows } = await postsRepository.getPosts(hashtag);
+    const { rows } = await postsRepository.getPosts(offset, user.id, hashtag);
     if (rows.length === 0) {
-      return res.send("There are no posts yet");
+      return res.send("No posts found from your friends");
     }
 
     let result = rows.map((element) => ({ ...element }));
