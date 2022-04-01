@@ -49,16 +49,6 @@ export async function getPosts(req, res) {
       return res.send("There are no posts yet");
     }
 
-    for (let i = 0; i < rows.length; i++) {
-      let item = rows[i];
-      for (let j = i + 1; j < rows.length; j++) {
-        let item2 = rows[j];
-        if (item.id === item2.id) {
-          rows.slice(j, 1);
-        }
-      }
-    }
-
     let result = rows.map((element) => {
       let likedByUser = false;
       if (element.likesList.includes(user.id)) likedByUser = true;
@@ -68,10 +58,8 @@ export async function getPosts(req, res) {
     result = result.filter(
       (value, index, self) => index === self.findIndex((t) => t.id === value.id)
     );
-    console.log(result);
     res.send(result);
   } catch (e) {
-    console.log(e);
     res.status(500).send(e);
   }
 }
