@@ -174,11 +174,7 @@ export async function readCommentsById(req, res) {
       return res.send([]);
     }
     comments.rows = comments.rows.filter(
-      (value, index, self) =>
-        index ===
-        self.findIndex(
-          (t) => t.authorId === value.authorId && t.content === value.content
-        )
+      (value, index, self) => index === self.findIndex((t) => t.id === value.id)
     );
     res.send(comments.rows);
   } catch (e) {

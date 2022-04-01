@@ -138,7 +138,7 @@ async function dislikePost(id) {
 async function readComments(userId, postId) {
   return connection.query(
     `
-    SELECT c."postId", a.id AS "authorId", a.name, a."profilePic", c.content,
+    SELECT c.id, c."postId", a.id AS "authorId", a.name, a."profilePic", c.content,
     CASE WHEN f."followingUserId"= $1
       THEN true ELSE false
     END AS followed,
