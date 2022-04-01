@@ -10,7 +10,6 @@ export async function getPostsByHashtag(req, res) {
     const topic = await postsRepository.validateTopic(hashtag);
     if (topic.rowCount < 1) return res.status(404).send("timeline");
     const { rows } = await postsRepository.getPosts(hashtag);
-    console.log(rows);
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
