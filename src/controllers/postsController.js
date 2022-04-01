@@ -87,7 +87,6 @@ export async function getPostsByUserId(req, res) {
       if (element.likesList.includes(userId)) likedByUser = true;
       return { ...element, likedByUser };
     });
-
     res.send(result).status(200);
   } catch (e) {
     res.status(500).send(e);
@@ -106,7 +105,6 @@ export async function deletePostById(req, res) {
     }
 
     await postsRepository.deletePost(postId);
-
     res.sendStatus(200);
   } catch (e) {
     res.status(500).send(e);
@@ -147,6 +145,7 @@ export async function getPostById(req, res) {
 }
 export async function likePostById(req, res) {
   try {
+    console.log("res.locals: ", res.locals);
     const user = res.locals.user;
     const { id } = req.params;
     if (!user || !id) {
