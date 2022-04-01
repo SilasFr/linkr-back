@@ -130,9 +130,7 @@ async function deletePost(id) {
     `,
     [id]
   );
-  
 }
-
 
 async function findPostId(userId) {
   return connection.query(
@@ -182,9 +180,10 @@ async function insertRepost(userId, postId) {
     INSERT INTO reposts ("reposterId", "postId")
     VALUES ($1, $2)
   `,
-    [userId, postId])
-  }
-  
+    [userId, postId]
+  );
+}
+
 async function coment(authorId, postId, content) {
   return connection.query(
     `
@@ -207,9 +206,6 @@ export const postsRepository = {
   editPostById,
   likePost,
   dislikePost,
-<<<<<<< HEAD
   insertRepost,
-=======
   coment,
->>>>>>> main
 };
