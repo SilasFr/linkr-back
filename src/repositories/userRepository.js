@@ -3,10 +3,17 @@ import connection from "../database.js";
 async function createUser({ userName, email, password, pictureUrl }) {
   return connection.query(
     `
-    INSERT INTO users
-        (name, email, password, "profilePic")
-        VALUES
-        ($1, $2, $3, $4)
+    WITH new_user AS(
+      INSERT INTO users
+      (name, email, password, "profilePic")
+      VALUES
+      ($1, $2, $3, $4)
+      RETURNING id AS user_id
+    )
+    INSERT INTO follows
+      ("followingUserId", "followedUserId")
+      SELECT user_id, user_id
+    FROM new_user
     `,
     [userName, email, password, pictureUrl]
   );

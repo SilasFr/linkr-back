@@ -50,12 +50,13 @@ export async function getPosts(req, res) {
   const { authorization } = req.headers;
   const token = authorization?.replace("Bearer ", "");
   try {
-    const { rows } = await postsRepository.getPosts(offset);
+    const userIdSearch = await userRepository.getUserByToken(token);
+
+    const { rows } = await postsRepository.getPosts(offset, userIdSearch.rows[0].userId);
     if (rows.length === 0) {
-      return res.send("There are no posts yet");
+      return res.send("No posts found from your friends");
     }
 
-    const userIdSearch = await userRepository.getUserByToken(token);
 
     let result = rows.map((element) => {
       let likedByUser = false;
