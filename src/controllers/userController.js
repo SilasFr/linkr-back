@@ -29,6 +29,7 @@ export async function createUser(req, res) {
 export async function searchUser(req, res) {
   try {
     const { user } = req.query;
+    console.log('teste')
 
     const fetchedUsers = await userRepository.searchUser(user);
     if (fetchedUsers.rowCount === 0) {
@@ -38,5 +39,17 @@ export async function searchUser(req, res) {
     res.status(200).send(fetchedUsers.rows);
   } catch (e) {
     res.status(500).send(e);
+  }
+}
+
+export async function searchUserId(req, res) {
+  const { authorization } = req.headers
+  const token = authorization?.replace("Bearer ", "");
+  try {
+    const userId = await userRepository.getUserByToken(token);
+    res.send(userId.rows[0]);
+  } catch (error) {
+    console.log(error)
+    res.sendStatus(500)
   }
 }
