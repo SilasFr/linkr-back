@@ -30,7 +30,8 @@ async function insertPost(userData, postData) {
   );
 }
 
-async function getPosts(hashtag = "") {
+async function getPosts(offset) {
+  let hashtag = "";
   const hashtagQuery =
     hashtag &&
     `JOIN "postsTopics" pt ON p.id=pt."postId"
@@ -48,7 +49,8 @@ async function getPosts(hashtag = "") {
       ${hashtagQuery}
     GROUP BY  p.id, u.id, l.id
     ORDER BY p."createdAt" DESC
-    LIMIT 20
+    LIMIT 10
+    ${offset}
     `);
 }
 
