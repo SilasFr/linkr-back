@@ -38,46 +38,44 @@ async function getPosts(userId, hashtag = "") {
         WHERE t.topic=${hashtag}`;
   return connection.query(
     `
-  SELECT *
- 	FROM(
-	SELECT p.id , p.description, p.author,
-		rp."postId" as "repostId", rp."reposterId", COUNT(rp."postId") AS "timesReposted",
-        l.link, l.title, l.description, l.image,
-        u.name AS "userName", u."profilePic",
-        ARRAY_AGG(lp."likeAuthor") "likesList"
-      
-  FROM posts p
-
-  LEFT JOIN "likedPost" lp ON lp."postId" = p.id
-  JOIN users u ON u.id = p.author
-  JOIN links l ON p."linkId"=l.id
-  LEFT JOIN reposts rp ON rp."postId"=p.id
-  ${hashtagQuery}
-
-  WHERE p.author=(SELECT "followedUserId" FROM follows WHERE "followingUserId"=$1) 
-    OR p.author=$1
-  GROUP BY p.id, u.id, l.id, rp.id
-
-	UNION ALL 
-
-	SELECT p.id, p.description, p.author,
-		rp."postId" as "repostId", rp."reposterId", COUNT(rp."postId") AS "timesReposted",
-        l.link, l.title, l.description, l.image,
-        u.name AS "userName", u."profilePic",
-        ARRAY_AGG(lp."likeAuthor") "likesList"
-
-	FROM reposts rp
-	JOIN posts p ON p.id = rp."postId"
-	LEFT JOIN "likedPost" lp ON lp."postId" = p.id
-  	JOIN users u ON u.id = p.author
-  	JOIN links l ON p."linkId"=l.id
-    ${hashtagQuery}
-
-	WHERE rp."reposterId"=(SELECT "followedUserId" FROM follows WHERE "followingUserId"=$1)
-    OR rp."reposterId"=$1	
-
-	GROUP BY p.id, u.id, l.id, rp.id
-) AS "postsAndReposts" LIMIT 20;
+    SELECT *
+    FROM(
+   SELECT p.id , p.description, p.author,
+     rp."postId" as "repostId", rp."reposterId", COUNT(rp."postId") AS "timesReposted",
+         l.link, l.title, l.description, l.image,
+         u.name AS "userName", u."profilePic",
+         ARRAY_AGG(lp."likeAuthor") "likesList"
+       
+   FROM posts p
+ 
+   LEFT JOIN "likedPost" lp ON lp."postId" = p.id
+   JOIN users u ON u.id = p.author 
+   JOIN links l ON p."linkId"=l.id
+   LEFT JOIN reposts rp ON rp."postId"=p.id
+   ${hashtagQuery}
+ 
+   WHERE p.author=(SELECT "followedUserId" FROM follows WHERE "followingUserId"=$1) 
+   GROUP BY p.id, u.id, l.id, rp.id
+ 
+   UNION ALL 
+ 
+   SELECT p.id, p.description, p.author,
+     rp."postId" as "repostId", rp."reposterId", COUNT(rp."postId") AS "timesReposted",
+         l.link, l.title, l.description, l.image,
+         u.name AS "userName", u."profilePic",
+         ARRAY_AGG(lp."likeAuthor") "likesList"
+ 
+   FROM reposts rp
+   JOIN posts p ON p.id = rp."postId"
+   LEFT JOIN "likedPost" lp ON lp."postId" = p.id
+     JOIN users u ON u.id = p.author 
+     JOIN links l ON p."linkId"=l.id
+     ${hashtagQuery}
+ 
+   WHERE rp."reposterId"=(SELECT "followedUserId" FROM follows WHERE "followingUserId"=$1)
+ 
+   GROUP BY p.id, u.id, l.id, rp.id
+ ) AS "postsAndReposts" LIMIT 20;
     `,
     [userId]
   );

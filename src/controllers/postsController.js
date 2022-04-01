@@ -51,15 +51,16 @@ export async function getPosts(req, res) {
 
     let result = rows.map((element) => {
       let likedByUser = false;
+      let isReposted = false;
+      if (element.reposterId != element.author) {
+        isReposted = true;
+      }
       if (element.likesList.includes(user.id)) likedByUser = true;
-      return { ...element, likedByUser };
+      return { ...element, likedByUser, isReposted };
     });
-
-    result = result.filter(
-      (value, index, self) => index === self.findIndex((t) => t.id === value.id)
-    );
     res.send(result);
   } catch (e) {
+    console.log(e);
     res.status(500).send(e);
   }
 }

@@ -42,3 +42,16 @@ export async function searchUser(req, res) {
     res.status(500).send(e);
   }
 }
+
+export async function getUser(req, res) {
+  try {
+    const { id } = req.params;
+    const result = await userRepository.getUserById(id);
+    if (result.rowCount === 0) {
+      return res.sendStatus(404);
+    }
+    res.status(200).send(result.rows[0]);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+}
