@@ -99,6 +99,7 @@ export async function deletePostById(req, res) {
       return res.status(409);
     }
 
+    await postsRepository.deletePostTopics(postId);
     await postsRepository.deletePost(postId);
 
     res.sendStatus(200);

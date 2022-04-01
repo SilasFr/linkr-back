@@ -128,3 +128,6 @@ CREATE TABLE reposts(
 			REFERENCES posts(id)
 			ON DELETE CASCADE
 );
+
+-- DELETE FROM some_child_table WHERE some_fk_field IN (SELECT some_id FROM some_Table);
+-- DELETE FROM some_table;
