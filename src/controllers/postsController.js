@@ -7,13 +7,18 @@ import { followRepository } from "../repositories/followRepository.js";
 // import res from "express/lib/response";
 
 export async function getPostsByHashtag(req, res) {
+  let offset = "";
+  if (req.query.offset) {
+    offset = `OFFSET ${req.query.offset * 10}`;
+  }
   const hashtag = SqlString.escape(req.params.hashtag);
   try {
+    const { user } = res.locals;
     const topic = await postsRepository.validateTopic(hashtag);
     if (topic.rowCount < 1) return res.status(404).send("timeline");
-    const { rows } = await postsRepository.getPosts(hashtag);
+    const { rows } = await postsRepository.getPosts(offset, user.id, hashtag);
     if (rows.length === 0) {
-      return res.send("There are no posts yet");
+      return res.send("No posts found from your friends");
     }
 
     let result = rows.map((element) => ({ ...element }));
@@ -37,7 +42,7 @@ export async function newPost(req, res) {
 
     return res.sendStatus(201);
   } catch (error) {
-    console.log(error, '<< aqui?');
+    console.log(error, "<< aqui?");
     return res.status(500).send("!erro! cadastrando novo post");
   }
 }
@@ -52,17 +57,21 @@ export async function getPosts(req, res) {
   const token = authorization?.replace("Bearer ", "");
   try {
     const userIdSearch = await userRepository.getUserByToken(token);
-    
-    const follows = await followRepository.countFollows(userIdSearch.rows[0].userId)
-    if(follows.rows.length === 1) {
-      return res.send("You don't follow anyone yet. Search for new friends!")
+
+    const follows = await followRepository.countFollows(
+      userIdSearch.rows[0].userId
+    );
+    if (follows.rows.length === 1) {
+      return res.send("You don't follow anyone yet. Search for new friends!");
     }
 
-    const { rows } = await postsRepository.getPosts(offset, userIdSearch.rows[0].userId);
+    const { rows } = await postsRepository.getPosts(
+      offset,
+      userIdSearch.rows[0].userId
+    );
     if (rows.length === 0) {
       return res.send("No posts found from your friends");
     }
-    
 
     let result = rows.map((element) => {
       let likedByUser = false;
@@ -115,7 +124,7 @@ export async function deletePostById(req, res) {
     await postsRepository.deletePost(postId);
     res.sendStatus(200);
   } catch (e) {
-    console.log(e, '!!!');
+    console.log(e, "!!!");
     res.status(500).send(e);
   }
 }
@@ -182,6 +191,24 @@ export async function dislikePostById(req, res) {
   }
 }
 
+export async function readCommentsById(req, res) {
+  try {
+    const { user } = res.locals;
+    const { id: postId } = req.params;
+
+    const comments = await postsRepository.readComments(user.id, postId);
+    if (comments.rowCount === 0) {
+      return res.send([]);
+    }
+    comments.rows = comments.rows.filter(
+      (value, index, self) => index === self.findIndex((t) => t.id === value.id)
+    );
+    res.send(comments.rows);
+  } catch (e) {
+    console.log(e);
+    return res.sendStatus(500);
+  }
+}
 export async function insertComment(req, res) {
   const { id } = req.params;
   const user = res.locals.user;

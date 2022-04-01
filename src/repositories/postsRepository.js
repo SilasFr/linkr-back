@@ -30,30 +30,34 @@ async function insertPost(userData, postData) {
   );
 }
 
-async function getPosts(offset, id) {
-  let hashtag = "";
+async function getPosts(offset, id, hashtag = "") {
   const hashtagQuery =
     hashtag &&
     `JOIN "postsTopics" pt ON p.id=pt."postId"
         JOIN topics t ON pt."topicId"=t.id
         WHERE t.topic=${hashtag}`;
-  return connection.query(`
+  return connection.query(
+    `
     SELECT p.id, p.description, p.author,
     l.link, l.title, l.description, l.image,
     u.name AS "userName", u."profilePic",
+    COUNT(c.id) AS "commentQty",
     f."followingUserId", f."followedUserId",
     ARRAY_AGG("likedPost"."likeAuthor") "likesList"
     FROM posts p
       LEFT JOIN "likedPost" on "likedPost"."postId" = p.id
       JOIN users u ON u.id = p.author
       JOIN links l ON p."linkId"=l.id
+      LEFT JOIN comments c ON p.id=c."postId"
       JOIN follows f ON f."followingUserId"=$1 AND f."followedUserId"=p.author
       ${hashtagQuery}
     GROUP BY  p.id, u.id, l.id, f.id
     ORDER BY p."createdAt" DESC
     LIMIT 10
     ${offset}
-    `, [id]);
+    `,
+    [id]
+  );
 }
 
 async function getPostsByUserId(id) {
@@ -103,9 +107,7 @@ async function deletePost(id) {
     `,
     [id]
   );
-  
 }
-
 
 async function findPostId(userId) {
   return connection.query(
@@ -149,6 +151,25 @@ async function dislikePost(id) {
   );
 }
 
+async function readComments(userId, postId) {
+  return connection.query(
+    `
+    SELECT c.id, c."postId", a.id AS "authorId", a.name, a."profilePic", c.content,
+    CASE WHEN f."followingUserId"= $1
+      THEN true ELSE false
+    END AS followed,
+    CASE WHEN p.author = a.id
+      THEN true ELSE false
+    END AS "isAuthor"
+    FROM comments c
+    JOIN users a ON c.author=a.id
+    LEFT JOIN follows f ON a.id=f."followedUserId"
+    LEFT JOIN posts p ON a.id=p.author
+    WHERE c."postId"=$2
+    `,
+    [userId, postId]
+  );
+}
 async function coment(authorId, postId, content) {
   return connection.query(
     `
@@ -171,5 +192,6 @@ export const postsRepository = {
   editPostById,
   likePost,
   dislikePost,
+  readComments,
   coment,
 };
