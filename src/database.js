@@ -5,6 +5,8 @@ dotenv.config();
 
 const { Pool } = pg;
 
+//Utilizar .env
+
 const databaseConfig = {
   connectionString: process.env.DATABASE_URL,
   ssl: {

@@ -1,10 +1,11 @@
 import { Router } from "express";
-import loginSchemaValidation from "../middlewares/loginSchemaValidation.js";
+import loginSchema from "../schemas/loginSchema.js";
+import { validateSchemaMiddleware } from "../middlewares/validateSchemaMiddleware.js";
 import { getSession, login } from "../controllers/loginController.js";
 
 const loginRouter = Router();
 
-loginRouter.post("/", loginSchemaValidation, login);
+loginRouter.post("/", validateSchemaMiddleware(loginSchema), login);
 loginRouter.get("/", getSession);
 
 export default loginRouter;

@@ -55,7 +55,6 @@ export async function getHashtags(req, res) {
     let result = rows.map((element) => ({ ...element }));
     res.send(result);
   } catch (e) {
-    console.log(e);
     res.status(500).send(e);
   }
 }

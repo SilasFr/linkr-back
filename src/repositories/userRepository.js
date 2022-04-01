@@ -49,10 +49,21 @@ async function searchUser(name) {
   );
 }
 
+async function searchExactUserName(name) {
+  return connection.query(
+    `
+    SELECT users.id, users.name
+    FROM users
+    WHERE name=$1;
+    `,
+    [name]);
+}
+
 export const userRepository = {
   createUser,
   getUserByEmail,
   getUserById,
   getUserByToken,
   searchUser,
+  searchExactUserName,
 };
