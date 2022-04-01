@@ -64,7 +64,10 @@ export async function searchUserId(req, res) {
     const userId = await userRepository.getUserByToken(token);
     res.send(userId.rows[0]);
   } catch (error) {
+<<<<<<< HEAD
     console.log(error);
+=======
+>>>>>>> main
     res.sendStatus(500);
   }
 }

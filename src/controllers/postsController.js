@@ -5,13 +5,18 @@ import urlMetadata from "url-metadata";
 // import res from "express/lib/response";
 
 export async function getPostsByHashtag(req, res) {
+  let offset = "";
+  if (req.query.offset) {
+    offset = `OFFSET ${req.query.offset * 10}`;
+  }
   const hashtag = SqlString.escape(req.params.hashtag);
   try {
+    const { user } = res.locals;
     const topic = await postsRepository.validateTopic(hashtag);
     if (topic.rowCount < 1) return res.status(404).send("timeline");
-    const { rows } = await postsRepository.getPosts(hashtag);
+    const { rows } = await postsRepository.getPosts(offset, user.id, hashtag);
     if (rows.length === 0) {
-      return res.send("There are no posts yet");
+      return res.send("No posts found from your friends");
     }
 
     let result = rows.map((element) => ({ ...element }));
@@ -35,16 +40,36 @@ export async function newPost(req, res) {
 
     return res.sendStatus(201);
   } catch (error) {
+<<<<<<< HEAD
     console.log(error);
+=======
+    console.log(error, "<< aqui?");
+>>>>>>> main
     return res.status(500).send("!erro! cadastrando novo post");
   }
 }
 
 export async function getPosts(req, res) {
   try {
+<<<<<<< HEAD
     const user = res.locals.user;
 
     const { rows } = await postsRepository.getPosts(user.id);
+=======
+    const userIdSearch = await userRepository.getUserByToken(token);
+
+    const follows = await followRepository.countFollows(
+      userIdSearch.rows[0].userId
+    );
+    if (follows.rows.length === 1) {
+      return res.send("You don't follow anyone yet. Search for new friends!");
+    }
+
+    const { rows } = await postsRepository.getPosts(
+      offset,
+      userIdSearch.rows[0].userId
+    );
+>>>>>>> main
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
@@ -72,7 +97,6 @@ export async function getPostsByUserId(req, res) {
     const userSearch = await userRepository.getUserById(userId);
     if (userSearch.rows.length === 0)
       return res.status(404).send("User not found");
-
     const search = await postsRepository.getPostsByUserId(userId);
     if (search.rows.length === 0) {
       return res.status(200).send("There are no posts yet");
@@ -83,8 +107,14 @@ export async function getPostsByUserId(req, res) {
       if (element.likesList.includes(userId)) likedByUser = true;
       return { ...element, likedByUser };
     });
+<<<<<<< HEAD
 
     res.send(result).status(200);
+=======
+    res
+      .send({ posts: [...result], author: userSearch.rows[0].name })
+      .status(200);
+>>>>>>> main
   } catch (e) {
     res.status(500).send(e);
   }
@@ -105,6 +135,10 @@ export async function deletePostById(req, res) {
 
     res.sendStatus(200);
   } catch (e) {
+<<<<<<< HEAD
+=======
+    console.log(e, "!!!");
+>>>>>>> main
     res.status(500).send(e);
   }
 }
@@ -166,6 +200,7 @@ export async function dislikePostById(req, res) {
   }
 }
 
+<<<<<<< HEAD
 export async function repost(req, res) {
   try {
     const userId = res.locals.user.id;
@@ -185,6 +220,26 @@ export async function repost(req, res) {
   }
 }
 
+=======
+export async function readCommentsById(req, res) {
+  try {
+    const { user } = res.locals;
+    const { id: postId } = req.params;
+
+    const comments = await postsRepository.readComments(user.id, postId);
+    if (comments.rowCount === 0) {
+      return res.send([]);
+    }
+    comments.rows = comments.rows.filter(
+      (value, index, self) => index === self.findIndex((t) => t.id === value.id)
+    );
+    res.send(comments.rows);
+  } catch (e) {
+    console.log(e);
+    return res.sendStatus(500);
+  }
+}
+>>>>>>> main
 export async function insertComment(req, res) {
   const { id } = req.params;
   const user = res.locals.user;

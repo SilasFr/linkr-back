@@ -5,7 +5,11 @@ import {
   getPostsByHashtag,
   dislikePostById,
   likePostById,
+<<<<<<< HEAD
   repost,
+=======
+  readCommentsById,
+>>>>>>> main
 } from "../controllers/postsController.js";
 import { validateTokenMiddleware } from "../middlewares/validateTokenMiddleware.js";
 import { postValidationMiddleware } from "../middlewares/postValidationMiddleware.js";
@@ -46,6 +50,11 @@ postsRouter.post(
   "/posts/:id/dislike",
   validateTokenMiddleware,
   dislikePostById
+);
+postsRouter.get(
+  "/posts/:id/comment",
+  validateTokenMiddleware,
+  readCommentsById
 );
 postsRouter.post("/posts/:id/comment", validateTokenMiddleware, insertComment);
 

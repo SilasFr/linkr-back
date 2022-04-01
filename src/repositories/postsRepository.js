@@ -30,7 +30,11 @@ async function insertPost(userData, postData) {
   );
 }
 
+<<<<<<< HEAD
 async function getPosts(userId, offset, hashtag = "") {
+=======
+async function getPosts(offset, id, hashtag = "") {
+>>>>>>> main
   const hashtagQuery =
     hashtag &&
     `JOIN "postsTopics" pt ON p.id=pt."postId"
@@ -38,6 +42,7 @@ async function getPosts(userId, offset, hashtag = "") {
         WHERE t.topic=${hashtag}`;
   return connection.query(
     `
+<<<<<<< HEAD
     SELECT *
     FROM(
    SELECT p.id , p.description, p.author,
@@ -80,6 +85,27 @@ async function getPosts(userId, offset, hashtag = "") {
  LIMIT 20;
  `,
     [userId]
+=======
+    SELECT p.id, p.description, p.author,
+    l.link, l.title, l.description, l.image,
+    u.name AS "userName", u."profilePic",
+    COUNT(c.id) AS "commentQty",
+    f."followingUserId", f."followedUserId",
+    ARRAY_AGG("likedPost"."likeAuthor") "likesList"
+    FROM posts p
+      LEFT JOIN "likedPost" on "likedPost"."postId" = p.id
+      JOIN users u ON u.id = p.author
+      JOIN links l ON p."linkId"=l.id
+      LEFT JOIN comments c ON p.id=c."postId"
+      JOIN follows f ON f."followingUserId"=$1 AND f."followedUserId"=p.author
+      ${hashtagQuery}
+    GROUP BY  p.id, u.id, l.id, f.id
+    ORDER BY p."createdAt" DESC
+    LIMIT 10
+    ${offset}
+    `,
+    [id]
+>>>>>>> main
   );
 }
 
@@ -174,6 +200,7 @@ async function dislikePost(id) {
   );
 }
 
+<<<<<<< HEAD
 async function insertRepost(userId, postId) {
   return connection.query(
     `
@@ -184,6 +211,29 @@ async function insertRepost(userId, postId) {
   );
 }
 
+=======
+async function readComments(userId, postId) {
+  return connection.query(
+    `
+    SELECT c.id, c."postId", u.id AS "authorId", u.name, u."profilePic", c.content,
+    CASE WHEN f."followingUserId"= $1
+      THEN true ELSE false
+    END AS followed,
+    CASE WHEN c.author = p.author
+      THEN true ELSE false
+    END AS "isAuthor"
+    FROM comments c
+    LEFT JOIN users u ON c.author=u.id
+    LEFT JOIN follows f ON u.id=f."followedUserId"
+    
+    LEFT JOIN posts p ON c."postId"=p.id
+    
+    WHERE c."postId"=$2
+    `,
+    [userId, postId]
+  );
+}
+>>>>>>> main
 async function coment(authorId, postId, content) {
   return connection.query(
     `
@@ -206,6 +256,10 @@ export const postsRepository = {
   editPostById,
   likePost,
   dislikePost,
+<<<<<<< HEAD
   insertRepost,
+=======
+  readComments,
+>>>>>>> main
   coment,
 };
