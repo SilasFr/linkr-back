@@ -13,6 +13,7 @@ import {
   deletePostById,
   getPosts,
   getPostsByUserId,
+  insertComment,
 } from "../controllers/postsController.js";
 
 import { newPost } from "../controllers/postsController.js";
@@ -51,5 +52,6 @@ postsRouter.get(
   validateTokenMiddleware,
   readCommentsById
 );
+postsRouter.post("/posts/:id/comment", validateTokenMiddleware, insertComment);
 
 export default postsRouter;

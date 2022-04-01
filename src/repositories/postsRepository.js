@@ -30,34 +30,40 @@ async function insertPost(userData, postData) {
   );
 }
 
-async function getPosts(hashtag = "") {
+async function getPosts(offset, id, hashtag = "") {
   const hashtagQuery =
     hashtag &&
     `JOIN "postsTopics" pt ON p.id=pt."postId"
         JOIN topics t ON pt."topicId"=t.id
         WHERE t.topic=${hashtag}`;
-  return connection.query(`
-    SELECT p.id, p.description, 
+  return connection.query(
+    `
+    SELECT p.id, p.description, p.author,
     l.link, l.title, l.description, l.image,
     u.name AS "userName", u."profilePic",
     COUNT(c.id) AS "commentQty",
+    f."followingUserId", f."followedUserId",
     ARRAY_AGG("likedPost"."likeAuthor") "likesList"
     FROM posts p
       LEFT JOIN "likedPost" on "likedPost"."postId" = p.id
       JOIN users u ON u.id = p.author
       JOIN links l ON p."linkId"=l.id
       LEFT JOIN comments c ON p.id=c."postId"
+      JOIN follows f ON f."followingUserId"=$1 AND f."followedUserId"=p.author
       ${hashtagQuery}
-    GROUP BY  p.id, u.id, l.id
+    GROUP BY  p.id, u.id, l.id, f.id
     ORDER BY p."createdAt" DESC
-    LIMIT 20
-    `);
+    LIMIT 10
+    ${offset}
+    `,
+    [id]
+  );
 }
 
 async function getPostsByUserId(id) {
   return connection.query(
     `
-    SELECT p.id, p.description, 
+    SELECT p.id, p.description, p.author,
     l.link, l.title, l.description, l.image,
      u.name AS "userName", u."profilePic",
      ARRAY_AGG("likedPost"."likeAuthor") "likesList"
@@ -83,12 +89,22 @@ async function getPostById(id) {
   );
 }
 
+async function deletePostTopics(postId) {
+  return connection.query(
+    `
+    DELETE FROM "postsTopics" WHERE "postsTopics"."postId" IN
+      (SELECT posts.id FROM posts WHERE posts.id=$1);
+    
+    `,
+    [postId]
+  );
+}
+
 async function deletePost(id) {
   return connection.query(
     `
-  DELETE FROM posts 
-  WHERE id=$1
-`,
+    DELETE FROM posts WHERE id=$1;    
+    `,
     [id]
   );
 }
@@ -154,6 +170,15 @@ async function readComments(userId, postId) {
     [userId, postId]
   );
 }
+async function coment(authorId, postId, content) {
+  return connection.query(
+    `
+    INSERT INTO comments (author, "postId", content)
+    VALUES ($1, $2, $3)
+    `,
+    [authorId, postId, content]
+  );
+}
 
 export const postsRepository = {
   validateTopic,
@@ -162,9 +187,11 @@ export const postsRepository = {
   getPostsByUserId,
   getPostById,
   deletePost,
+  deletePostTopics,
   findPostId,
   editPostById,
   likePost,
   dislikePost,
   readComments,
+  coment,
 };

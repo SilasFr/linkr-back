@@ -2,6 +2,8 @@ import SqlString from "sqlstring";
 import { postsRepository } from "../repositories/postsRepository.js";
 import { userRepository } from "../repositories/userRepository.js";
 import urlMetadata from "url-metadata";
+import { likesRepository } from "../repositories/likesRepository.js";
+import { followRepository } from "../repositories/followRepository.js";
 // import res from "express/lib/response";
 
 export async function getPostsByHashtag(req, res) {
@@ -35,21 +37,36 @@ export async function newPost(req, res) {
 
     return res.sendStatus(201);
   } catch (error) {
-    console.log(error);
+    console.log(error, "<< aqui?");
     return res.status(500).send("!erro! cadastrando novo post");
   }
 }
 
 export async function getPosts(req, res) {
+  let offset = "";
+  if (req.query.offset) {
+    offset = `OFFSET ${req.query.offset * 10}`;
+  }
+
   const { authorization } = req.headers;
   const token = authorization?.replace("Bearer ", "");
   try {
-    const { rows } = await postsRepository.getPosts();
-    if (rows.length === 0) {
-      return res.send("There are no posts yet");
+    const userIdSearch = await userRepository.getUserByToken(token);
+
+    const follows = await followRepository.countFollows(
+      userIdSearch.rows[0].userId
+    );
+    if (follows.rows.length === 1) {
+      return res.send("You don't follow anyone yet. Search for new friends!");
     }
 
-    const userIdSearch = await userRepository.getUserByToken(token);
+    const { rows } = await postsRepository.getPosts(
+      offset,
+      userIdSearch.rows[0].userId
+    );
+    if (rows.length === 0) {
+      return res.send("No posts found from your friends");
+    }
 
     let result = rows.map((element) => {
       let likedByUser = false;
@@ -57,7 +74,7 @@ export async function getPosts(req, res) {
         likedByUser = true;
       return { ...element, likedByUser };
     });
-    res.send(result);
+    res.send(result).status(200);
   } catch (e) {
     res.status(500).send(e);
   }
@@ -81,7 +98,6 @@ export async function getPostsByUserId(req, res) {
       if (element.likesList.includes(userId)) likedByUser = true;
       return { ...element, likedByUser };
     });
-
     res.send(result).status(200);
   } catch (e) {
     res.status(500).send(e);
@@ -99,10 +115,11 @@ export async function deletePostById(req, res) {
       return res.status(409);
     }
 
+    await postsRepository.deletePostTopics(postId);
     await postsRepository.deletePost(postId);
-
     res.sendStatus(200);
   } catch (e) {
+    console.log(e, "!!!");
     res.status(500).send(e);
   }
 }
@@ -141,11 +158,16 @@ export async function getPostById(req, res) {
 }
 export async function likePostById(req, res) {
   try {
+    console.log("res.locals: ", res.locals);
     const user = res.locals.user;
     const { id } = req.params;
     if (!user || !id) {
       return res.sendStatus(409);
     }
+
+    const likeSearch = await likesRepository.searchUserLike(id, user.id);
+
+    if (likeSearch.rows.length > 0) return res.sendStatus(409);
 
     await postsRepository.likePost(id, user.id);
   } catch (e) {
@@ -179,6 +201,20 @@ export async function readCommentsById(req, res) {
     res.send(comments.rows);
   } catch (e) {
     console.log(e);
+    return res.sendStatus(500);
+  }
+}
+export async function insertComment(req, res) {
+  const { id } = req.params;
+  const user = res.locals.user;
+  const { comment } = req.body;
+  try {
+    const postSearch = await postsRepository.getPostById(id);
+    if (postSearch.rows.length === 0) return res.sendStatus(404);
+
+    await postsRepository.coment(user.id, id, comment);
+    return res.sendStatus(201);
+  } catch {
     return res.sendStatus(500);
   }
 }

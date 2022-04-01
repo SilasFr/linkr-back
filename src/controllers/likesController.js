@@ -10,7 +10,6 @@ export async function getLikesByPostId(req, res) {
       return res.status(404).send("Post not found");
 
     const likesList = await likesRepository.getLikes(postId);
-
     return res.status(200).send(likesList.rows);
   } catch {
     return res.sendStatus(500);
