@@ -24,6 +24,7 @@ export async function createUser(req, res) {
 
     res.sendStatus(201);
   } catch (e) {
+    console.log(e, "<< sign-up");
     res.status(500).send(e);
   }
 }
@@ -31,12 +32,12 @@ export async function createUser(req, res) {
 export async function searchUser(req, res) {
   try {
     const { user } = req.query;
+    const font = res.locals.user;
 
-    const fetchedUsers = await userRepository.searchUser(user);
+    const fetchedUsers = await userRepository.searchUser(font.id, user);
     if (fetchedUsers.rowCount === 0) {
       return res.send([]);
     }
-
     res.status(200).send(fetchedUsers.rows);
   } catch (e) {
     res.status(500).send(e);
@@ -53,5 +54,17 @@ export async function getUser(req, res) {
     res.status(200).send(result.rows[0]);
   } catch (e) {
     res.status(500).send(e);
+  }
+}
+
+export async function searchUserId(req, res) {
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "");
+  try {
+    const userId = await userRepository.getUserByToken(token);
+    res.send(userId.rows[0]);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
   }
 }

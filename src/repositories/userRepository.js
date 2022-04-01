@@ -3,10 +3,17 @@ import connection from "../database.js";
 async function createUser({ userName, email, password, pictureUrl }) {
   return connection.query(
     `
-    INSERT INTO users
-        (name, email, password, "profilePic")
-        VALUES
-        ($1, $2, $3, $4)
+    WITH new_user AS(
+      INSERT INTO users
+      (name, email, password, "profilePic")
+      VALUES
+      ($1, $2, $3, $4)
+      RETURNING id AS user_id
+    )
+    INSERT INTO follows
+      ("followingUserId", "followedUserId")
+      SELECT user_id, user_id
+    FROM new_user
     `,
     [userName, email, password, pictureUrl]
   );
@@ -39,13 +46,18 @@ async function getUserById(id) {
     [id]
   );
 }
-async function searchUser(name) {
+async function searchUser(userId, name) {
   return connection.query(
     `
-    SELECT u.id, u.name, u."profilePic"
+    SELECT u.id, u.name, u."profilePic",
+    CASE WHEN f."followingUserId" = $1 THEN true ELSE false END as followed
     FROM users u
+    LEFT JOIN follows f ON u.id=f."followedUserId"
     WHERE u.name ilike '${name + "%"}'
-    `
+    ORDER BY followed
+    LIMIT 10
+    `,
+    [userId]
   );
 }
 
@@ -56,7 +68,8 @@ async function searchExactUserName(name) {
     FROM users
     WHERE name=$1;
     `,
-    [name]);
+    [name]
+  );
 }
 
 export const userRepository = {

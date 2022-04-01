@@ -30,7 +30,7 @@ async function insertPost(userData, postData) {
   );
 }
 
-async function getPosts(userId, hashtag = "") {
+async function getPosts(userId, offset, hashtag = "") {
   const hashtagQuery =
     hashtag &&
     `JOIN "postsTopics" pt ON p.id=pt."postId"
@@ -75,7 +75,9 @@ async function getPosts(userId, hashtag = "") {
    WHERE rp."reposterId"=(SELECT "followedUserId" FROM follows WHERE "followingUserId"=$1)
  
    GROUP BY p.id, u.id, l.id, rp.id
- ) AS "postsAndReposts" LIMIT 20;
+ ) AS "postsAndReposts"
+ ${offset}
+ LIMIT 20;
     `,
     [userId]
   );
@@ -84,7 +86,7 @@ async function getPosts(userId, hashtag = "") {
 async function getPostsByUserId(id) {
   return connection.query(
     `
-    SELECT p.id, p.description, 
+    SELECT p.id, p.description, p.author,
     l.link, l.title, l.description, l.image,
      u.name AS "userName", u."profilePic",
      ARRAY_AGG("likedPost"."likeAuthor") "likesList"
@@ -110,15 +112,27 @@ async function getPostById(id) {
   );
 }
 
+async function deletePostTopics(postId) {
+  return connection.query(
+    `
+    DELETE FROM "postsTopics" WHERE "postsTopics"."postId" IN
+      (SELECT posts.id FROM posts WHERE posts.id=$1);
+    
+    `,
+    [postId]
+  );
+}
+
 async function deletePost(id) {
   return connection.query(
     `
-  DELETE FROM posts 
-  WHERE id=$1
-`,
+    DELETE FROM posts WHERE id=$1;    
+    `,
     [id]
   );
+  
 }
+
 
 async function findPostId(userId) {
   return connection.query(
@@ -168,7 +182,16 @@ async function insertRepost(userId, postId) {
     INSERT INTO reposts ("reposterId", "postId")
     VALUES ($1, $2)
   `,
-    [userId, postId]
+    [userId, postId])
+  }
+  
+async function coment(authorId, postId, content) {
+  return connection.query(
+    `
+    INSERT INTO comments (author, "postId", content)
+    VALUES ($1, $2, $3)
+    `,
+    [authorId, postId, content]
   );
 }
 
@@ -179,9 +202,14 @@ export const postsRepository = {
   getPostsByUserId,
   getPostById,
   deletePost,
+  deletePostTopics,
   findPostId,
   editPostById,
   likePost,
   dislikePost,
+<<<<<<< HEAD
   insertRepost,
+=======
+  coment,
+>>>>>>> main
 };

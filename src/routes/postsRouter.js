@@ -13,6 +13,7 @@ import {
   deletePostById,
   getPosts,
   getPostsByUserId,
+  insertComment,
 } from "../controllers/postsController.js";
 
 import { newPost } from "../controllers/postsController.js";
@@ -46,6 +47,7 @@ postsRouter.post(
   validateTokenMiddleware,
   dislikePostById
 );
+postsRouter.post("/posts/:id/comment", validateTokenMiddleware, insertComment);
 
 postsRouter.post("/posts/:id/repost", validateTokenMiddleware, repost);
 
