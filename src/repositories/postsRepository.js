@@ -30,7 +30,7 @@ async function insertPost(userData, postData) {
   );
 }
 
-async function getPosts(offset) {
+async function getPosts(offset, id) {
   let hashtag = "";
   const hashtagQuery =
     hashtag &&
@@ -41,17 +41,19 @@ async function getPosts(offset) {
     SELECT p.id, p.description, p.author,
     l.link, l.title, l.description, l.image,
     u.name AS "userName", u."profilePic",
+    f."followingUserId", f."followedUserId",
     ARRAY_AGG("likedPost"."likeAuthor") "likesList"
     FROM posts p
       LEFT JOIN "likedPost" on "likedPost"."postId" = p.id
       JOIN users u ON u.id = p.author
       JOIN links l ON p."linkId"=l.id
+      JOIN follows f ON f."followingUserId"=$1 AND f."followedUserId"=p.author
       ${hashtagQuery}
-    GROUP BY  p.id, u.id, l.id
+    GROUP BY  p.id, u.id, l.id, f.id
     ORDER BY p."createdAt" DESC
     LIMIT 10
     ${offset}
-    `);
+    `, [id]);
 }
 
 async function getPostsByUserId(id) {

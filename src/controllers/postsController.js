@@ -3,6 +3,7 @@ import { postsRepository } from "../repositories/postsRepository.js";
 import { userRepository } from "../repositories/userRepository.js";
 import urlMetadata from "url-metadata";
 import { likesRepository } from "../repositories/likesRepository.js";
+import { followRepository } from "../repositories/followRepository.js";
 // import res from "express/lib/response";
 
 export async function getPostsByHashtag(req, res) {
@@ -50,12 +51,18 @@ export async function getPosts(req, res) {
   const { authorization } = req.headers;
   const token = authorization?.replace("Bearer ", "");
   try {
-    const { rows } = await postsRepository.getPosts(offset);
-    if (rows.length === 0) {
-      return res.send("There are no posts yet");
+    const userIdSearch = await userRepository.getUserByToken(token);
+    
+    const follows = await followRepository.countFollows(userIdSearch.rows[0].userId)
+    if(follows.rows.length === 1) {
+      return res.send("You don't follow anyone yet. Search for new friends!")
     }
 
-    const userIdSearch = await userRepository.getUserByToken(token);
+    const { rows } = await postsRepository.getPosts(offset, userIdSearch.rows[0].userId);
+    if (rows.length === 0) {
+      return res.send("No posts found from your friends");
+    }
+    
 
     let result = rows.map((element) => {
       let likedByUser = false;

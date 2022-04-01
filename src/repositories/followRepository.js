@@ -1,5 +1,12 @@
 import connection from "../database.js";
 
+async function countFollows(sessionUserId) {
+  return connection.query(`
+    SELECT * FROM follows
+    WHERE "followingUserId"=${sessionUserId}
+  `)
+}
+
 async function insertFollow(sessionUserId, userId) {
   const followingUserId = sessionUserId
   const followedUserId = userId
@@ -39,5 +46,6 @@ async function verifyFollow(sessionUserId, userId) {
 export const followRepository = {
     insertFollow,
     removeFollow,
-    verifyFollow
+    verifyFollow,
+    countFollows
 }
