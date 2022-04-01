@@ -30,14 +30,15 @@ async function insertPost(userData, postData) {
   );
 }
 
-async function getPosts(hashtag = "") {
+async function getPosts(offset) {
+  let hashtag = "";
   const hashtagQuery =
     hashtag &&
     `JOIN "postsTopics" pt ON p.id=pt."postId"
         JOIN topics t ON pt."topicId"=t.id
         WHERE t.topic=${hashtag}`;
   return connection.query(`
-    SELECT p.id, p.description, 
+    SELECT p.id, p.description, p.author,
     l.link, l.title, l.description, l.image,
     u.name AS "userName", u."profilePic",
     ARRAY_AGG("likedPost"."likeAuthor") "likesList"
@@ -48,14 +49,15 @@ async function getPosts(hashtag = "") {
       ${hashtagQuery}
     GROUP BY  p.id, u.id, l.id
     ORDER BY p."createdAt" DESC
-    LIMIT 20
+    LIMIT 10
+    ${offset}
     `);
 }
 
 async function getPostsByUserId(id) {
   return connection.query(
     `
-    SELECT p.id, p.description, 
+    SELECT p.id, p.description, p.author,
     l.link, l.title, l.description, l.image,
      u.name AS "userName", u."profilePic",
      ARRAY_AGG("likedPost"."likeAuthor") "likesList"

@@ -2,6 +2,7 @@ import SqlString from "sqlstring";
 import { postsRepository } from "../repositories/postsRepository.js";
 import { userRepository } from "../repositories/userRepository.js";
 import urlMetadata from "url-metadata";
+import { likesRepository } from "../repositories/likesRepository.js";
 // import res from "express/lib/response";
 
 export async function getPostsByHashtag(req, res) {
@@ -41,10 +42,15 @@ export async function newPost(req, res) {
 }
 
 export async function getPosts(req, res) {
+  let offset = "";
+  if (req.query.offset) {
+    offset = `OFFSET ${req.query.offset * 10}`;
+  }
+
   const { authorization } = req.headers;
   const token = authorization?.replace("Bearer ", "");
   try {
-    const { rows } = await postsRepository.getPosts();
+    const { rows } = await postsRepository.getPosts(offset);
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
@@ -57,7 +63,7 @@ export async function getPosts(req, res) {
         likedByUser = true;
       return { ...element, likedByUser };
     });
-    res.send(result);
+    res.send(result).status(200);
   } catch (e) {
     res.status(500).send(e);
   }
@@ -81,7 +87,6 @@ export async function getPostsByUserId(req, res) {
       if (element.likesList.includes(userId)) likedByUser = true;
       return { ...element, likedByUser };
     });
-
     res.send(result).status(200);
   } catch (e) {
     res.status(500).send(e);
@@ -100,7 +105,6 @@ export async function deletePostById(req, res) {
     }
 
     await postsRepository.deletePost(postId);
-
     res.sendStatus(200);
   } catch (e) {
     res.status(500).send(e);
@@ -141,11 +145,16 @@ export async function getPostById(req, res) {
 }
 export async function likePostById(req, res) {
   try {
+    console.log("res.locals: ", res.locals);
     const user = res.locals.user;
     const { id } = req.params;
     if (!user || !id) {
       return res.sendStatus(409);
     }
+
+    const likeSearch = await likesRepository.searchUserLike(id, user.id);
+    console.log("likeSearch: ", likeSearch);
+    if (likeSearch.rows.length > 0) return res.sendStatus(409);
 
     await postsRepository.likePost(id, user.id);
   } catch (e) {
