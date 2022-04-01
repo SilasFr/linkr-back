@@ -31,13 +31,14 @@ export async function createUser(req, res) {
 export async function searchUser(req, res) {
   try {
     const { user } = req.query;
-    console.log('teste')
+    const font = res.locals.user;
 
-    const fetchedUsers = await userRepository.searchUser(user);
+
+
+    const fetchedUsers = await userRepository.searchUser(font.id, user);
     if (fetchedUsers.rowCount === 0) {
       return res.send([]);
     }
-
     res.status(200).send(fetchedUsers.rows);
   } catch (e) {
     res.status(500).send(e);
