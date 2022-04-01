@@ -102,7 +102,9 @@ export async function getPostsByUserId(req, res) {
       if (element.likesList.includes(userId)) likedByUser = true;
       return { ...element, likedByUser };
     });
-    res.send({ ...result, author: userSearch.rows[0].name }).status(200);
+    res
+      .send({ posts: [...result], author: userSearch.rows[0].name })
+      .status(200);
   } catch (e) {
     res.status(500).send(e);
   }
