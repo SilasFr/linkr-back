@@ -36,7 +36,7 @@ export async function newPost(req, res) {
 
     return res.sendStatus(201);
   } catch (error) {
-    console.log(error);
+    console.log(error, '<< aqui?');
     return res.status(500).send("!erro! cadastrando novo post");
   }
 }
@@ -104,9 +104,11 @@ export async function deletePostById(req, res) {
       return res.status(409);
     }
 
+    await postsRepository.deletePostTopics(postId);
     await postsRepository.deletePost(postId);
     res.sendStatus(200);
   } catch (e) {
+    console.log(e, '!!!');
     res.status(500).send(e);
   }
 }

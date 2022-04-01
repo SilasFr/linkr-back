@@ -1,0 +1,133 @@
+CREATE DATABASE linkr;
+
+-- CREATE TABLE table_name (
+--    column_name TYPE [column_constraint],
+--		[table_constraint,]
+--);
+
+CREATE TABLE users(
+	id INT GENERATED ALWAYS AS IDENTITY,
+	name TEXT NOT NULL,
+	email TEXT UNIQUE NOT NULL,
+	password VARCHAR(255) NOT NULL,
+	"profilePic" TEXT NOT NULL,
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE links(
+	id INT GENERATED ALWAYS AS IDENTITY,
+	link TEXT NOT NULL,
+	title TEXT NOT NULL,
+	description TEXT,
+	image TEXT NOT NULL,
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE posts(
+	id INT GENERATED ALWAYS AS IDENTITY,
+	author INTEGER NOT NULL,
+	description TEXT NOT NULL,
+	"linkId" INTEGER NOT NULL,
+	"createdAt" DATE NOT NULL DEFAULT NOW(),
+	PRIMARY KEY(id),
+	CONSTRAINT fk_user
+		FOREIGN KEY(author)
+			REFERENCES users(id)
+			ON DELETE CASCADE
+);
+
+CREATE TABLE sessions(
+	id INT GENERATED ALWAYS AS IDENTITY,
+	"userId" INTEGER NOT NULL,
+	token TEXT NOT NULL,
+	"expiresAt" TIMESTAMP WITH TIME ZONE NOT NULL,
+	PRIMARY KEY(id),
+	CONSTRAINT fk_user
+		FOREIGN KEY("userId")
+			REFERENCES users(id)
+);
+
+CREATE TABLE "likedPost"(
+    id INT GENERATED ALWAYS AS IDENTITY,
+    "postId" INTEGER NOT NULL,
+    "likeAuthor" INTEGER NOT NULL,
+		PRIMARY KEY(id),
+		CONSTRAINT fk_post
+			FOREIGN KEY("postId")
+				REFERENCES posts(id)
+				ON DELETE CASCADE,
+		CONSTRAINT fk_user
+			FOREIGN KEY("likeAuthor")
+				REFERENCES users(id)
+				ON DELETE CASCADE
+);
+
+CREATE TABLE topics(
+    id INT GENERATED ALWAYS AS IDENTITY,
+    topic TEXT NOT NULL UNIQUE,
+		PRIMARY KEY(id)
+);
+
+CREATE TABLE "postsTopics"(
+    id INT GENERATED ALWAYS AS IDENTITY,
+    "postId" INTEGER NOT NULL,
+    "topicId" INTEGER NOT NULL,
+		PRIMARY KEY(id),
+		CONSTRAINT fk_post
+			FOREIGN KEY("postId")
+				REFERENCES posts(id)
+				ON DELETE CASCADE,
+		CONSTRAINT fk_topic
+			FOREIGN KEY("topicId")
+				REFERENCES topics(id)
+				ON DELETE CASCADE
+);
+
+CREATE TABLE follows(
+	id INT GENERATED ALWAYS AS IDENTITY,
+	"followingUserId" INTEGER NOT NULL,
+	"followedUserId" INTEGER NOT NULL,
+	PRIMARY KEY(id),
+	CONSTRAINT fk_following
+		FOREIGN KEY("followingUserId")
+			REFERENCES users(id)
+			ON DELETE CASCADE,
+	CONSTRAINT fk_followed
+		FOREIGN KEY("followedUserId")
+			REFERENCES users(id)
+			ON DELETE CASCADE
+);
+
+CREATE TABLE comments(
+	id INT GENERATED ALWAYS AS IDENTITY,
+	author INTEGER NOT NULL,
+	"postId" INTEGER NOT NULL,
+	content TEXT NOT NULL,
+	PRIMARY KEY(id),
+	CONSTRAINT fk_user
+		FOREIGN KEY(author)
+			REFERENCES users(id)
+			ON DELETE CASCADE,
+	CONSTRAINT fk_post
+		FOREIGN KEY("postId")
+			REFERENCES posts(id)
+			ON DELETE CASCADE
+);
+
+CREATE TABLE reposts(
+	id INT GENERATED ALWAYS AS IDENTITY,
+	"reposterId" INTEGER NOT NULL,
+	"postId" INTEGER NOT NULL,
+	PRIMARY KEY(id),
+	CONSTRAINT fk_user
+		FOREIGN KEY("reposterId")
+			REFERENCES users(id)
+			ON DELETE CASCADE,
+	CONSTRAINT fk_post
+		FOREIGN KEY("postId")
+			REFERENCES posts(id)
+			ON DELETE CASCADE
+);
+
+-- DELETE FROM some_child_table WHERE some_fk_field IN (SELECT some_id FROM some_Table);
+-- DELETE FROM some_table;

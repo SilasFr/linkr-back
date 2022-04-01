@@ -83,15 +83,27 @@ async function getPostById(id) {
   );
 }
 
+async function deletePostTopics(postId) {
+  return connection.query(
+    `
+    DELETE FROM "postsTopics" WHERE "postsTopics"."postId" IN
+      (SELECT posts.id FROM posts WHERE posts.id=$1);
+    
+    `,
+    [postId]
+  );
+}
+
 async function deletePost(id) {
   return connection.query(
     `
-  DELETE FROM posts 
-  WHERE id=$1
-`,
+    DELETE FROM posts WHERE id=$1;    
+    `,
     [id]
   );
+  
 }
+
 
 async function findPostId(userId) {
   return connection.query(
@@ -152,6 +164,7 @@ export const postsRepository = {
   getPostsByUserId,
   getPostById,
   deletePost,
+  deletePostTopics,
   findPostId,
   editPostById,
   likePost,

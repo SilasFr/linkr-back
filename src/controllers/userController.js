@@ -24,6 +24,7 @@ export async function createUser(req, res) {
 
     res.sendStatus(201);
   } catch (e) {
+    console.log(e, '<< sign-up');
     res.status(500).send(e);
   }
 }
