@@ -135,6 +135,16 @@ async function dislikePost(id) {
   );
 }
 
+async function coment(authorId, postId, content) {
+  return connection.query(
+    `
+    INSERT INTO comments (author, "postId", content)
+    VALUES ($1, $2, $3)
+    `,
+    [authorId, postId, content]
+  );
+}
+
 export const postsRepository = {
   validateTopic,
   insertPost,
@@ -146,4 +156,5 @@ export const postsRepository = {
   editPostById,
   likePost,
   dislikePost,
+  coment,
 };

@@ -153,7 +153,7 @@ export async function likePostById(req, res) {
     }
 
     const likeSearch = await likesRepository.searchUserLike(id, user.id);
-    console.log("likeSearch: ", likeSearch);
+
     if (likeSearch.rows.length > 0) return res.sendStatus(409);
 
     await postsRepository.likePost(id, user.id);
@@ -169,6 +169,21 @@ export async function dislikePostById(req, res) {
     await postsRepository.dislikePost(id);
     res.status(200).send("ok");
   } catch (e) {
+    return res.sendStatus(500);
+  }
+}
+
+export async function insertComment(req, res) {
+  const { id } = req.params;
+  const user = res.locals.user;
+  const { comment } = req.body;
+  try {
+    const postSearch = await postsRepository.getPostById(id);
+    if (postSearch.rows.length === 0) return res.sendStatus(404);
+
+    await postsRepository.coment(user.id, id, comment);
+    return res.sendStatus(201);
+  } catch {
     return res.sendStatus(500);
   }
 }
