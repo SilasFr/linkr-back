@@ -44,18 +44,21 @@ export async function getPosts(req, res) {
   try {
     const user = res.locals.user;
 
-    const { rows } = await postsRepository.getPosts();
+    const { rows } = await postsRepository.getPosts(user.id);
     if (rows.length === 0) {
       return res.send("There are no posts yet");
     }
 
     let result = rows.map((element) => {
       let likedByUser = false;
+      // if(  )
       if (element.likesList.includes(user.id)) likedByUser = true;
       return { ...element, likedByUser };
     });
+    console.log(result);
     res.send(result);
   } catch (e) {
+    console.log(e);
     res.status(500).send(e);
   }
 }
