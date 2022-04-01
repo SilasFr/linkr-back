@@ -184,3 +184,18 @@ export async function repost(req, res) {
     res.status(500).send(e);
   }
 }
+
+export async function insertComment(req, res) {
+  const { id } = req.params;
+  const user = res.locals.user;
+  const { comment } = req.body;
+  try {
+    const postSearch = await postsRepository.getPostById(id);
+    if (postSearch.rows.length === 0) return res.sendStatus(404);
+
+    await postsRepository.coment(user.id, id, comment);
+    return res.sendStatus(201);
+  } catch {
+    return res.sendStatus(500);
+  }
+}

@@ -76,9 +76,9 @@ async function getPosts(userId, offset, hashtag = "") {
  
    GROUP BY p.id, u.id, l.id, rp.id
  ) AS "postsAndReposts"
- ${offset}
+ ${offset ? offset : ""}
  LIMIT 20;
-    `,
+ `,
     [userId]
   );
 }
