@@ -154,17 +154,19 @@ async function dislikePost(id) {
 async function readComments(userId, postId) {
   return connection.query(
     `
-    SELECT c.id, c."postId", a.id AS "authorId", a.name, a."profilePic", c.content,
+    SELECT c.id, c."postId", u.id AS "authorId", u.name, u."profilePic", c.content,
     CASE WHEN f."followingUserId"= $1
       THEN true ELSE false
     END AS followed,
-    CASE WHEN p.author = a.id
+    CASE WHEN c.author = p.author
       THEN true ELSE false
     END AS "isAuthor"
     FROM comments c
-    JOIN users a ON c.author=a.id
-    LEFT JOIN follows f ON a.id=f."followedUserId"
-    LEFT JOIN posts p ON a.id=p.author
+    LEFT JOIN users u ON c.author=u.id
+    LEFT JOIN follows f ON u.id=f."followedUserId"
+    
+    LEFT JOIN posts p ON c."postId"=p.id
+    
     WHERE c."postId"=$2
     `,
     [userId, postId]

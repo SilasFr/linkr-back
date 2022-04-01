@@ -92,7 +92,6 @@ export async function getPostsByUserId(req, res) {
     const userSearch = await userRepository.getUserById(userId);
     if (userSearch.rows.length === 0)
       return res.status(404).send("User not found");
-
     const search = await postsRepository.getPostsByUserId(userId);
     if (search.rows.length === 0) {
       return res.status(200).send("There are no posts yet");
@@ -103,7 +102,9 @@ export async function getPostsByUserId(req, res) {
       if (element.likesList.includes(userId)) likedByUser = true;
       return { ...element, likedByUser };
     });
-    res.send(result).status(200);
+    res
+      .send({ posts: [...result], author: userSearch.rows[0].name })
+      .status(200);
   } catch (e) {
     res.status(500).send(e);
   }
