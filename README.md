@@ -67,24 +67,40 @@ Agradecemos às seguintes pessoas que contribuíram para este projeto:
 <table>
   <tr>
     <td align="center">
-      <a href="#">
-        <img src="https://avatars.githubusercontent.com/u/91638947?s=400&u=0dffc6912e5e9be3d8c9e41428f96268dfa0b1a1&v=4" width="100px;" alt="Foto do Silas Fernandes no GitHub"/><br>
+      <a href="https://github.com/SilasFr">
+        <img src="https://avatars.githubusercontent.com/u/91638947?v=4" width="100px;" alt="Foto do Silas Fernandes"/><br>
         <sub>
           <b>Silas Fernandes</b>
         </sub>
       </a>
     </td>
     <td align="center">
-      <a href="#">
-        <img src="https://s2.glbimg.com/FUcw2usZfSTL6yCCGj3L3v3SpJ8=/smart/e.glbimg.com/og/ed/f/original/2019/04/25/zuckerberg_podcast.jpg" width="100px;" alt="Foto do Mark Zuckerberg"/><br>
+      <a href="https://github.com/kawaym">
+        <img src="https://avatars.githubusercontent.com/u/57325050?v=4" width="100px;" alt="Foto do Kaway Marinho"/><br>
         <sub>
           <b>Mark Zuckerberg</b>
         </sub>
       </a>
     </td>
     <td align="center">
-      <a href="#">
-        <img src="https://miro.medium.com/max/360/0*1SkS3mSorArvY9kS.jpg" width="100px;" alt="Foto do Steve Jobs"/><br>
+      <a href="https://github.com/MatheusMorais2">
+        <img src="https://avatars.githubusercontent.com/u/93623979?v=4" width="100px;" alt="Foto do Matheus Morais"/><br>
+        <sub>
+          <b>Steve Jobs</b>
+        </sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/a16we8r51fas6dfd">
+        <img src="https://avatars.githubusercontent.com/u/18654758?v=4" width="100px;" alt="Foto do Fernando Yudi"/><br>
+        <sub>
+          <b>Steve Jobs</b>
+        </sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/teles-tarcisio">
+        <img src="https://avatars.githubusercontent.com/u/38328194?v=4" width="100px;" alt="Foto do Tarcísio Teles"/><br>
         <sub>
           <b>Steve Jobs</b>
         </sub>
@@ -102,4 +118,4 @@ Quer fazer parte desse projeto? Clique [AQUI](CONTRIBUTING.md) e leia como contr
 
 Esse projeto está sob licença. Veja o arquivo [LICENÇA](LICENSE.md) para mais detalhes.
 
-[⬆ Voltar ao topo](#nome-do-projeto)<br>
+[⬆ Voltar ao topo](# linkr-back)<br>
